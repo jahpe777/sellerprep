@@ -279,11 +279,15 @@ body {
   color: #23803a;
 }
 
+/* Success and error messages */
 .sp-message {
   font-size: 1rem;
   color: var(--sp-danger);
   margin-top: 14px;
   min-height: 22px;
+}
+.sp-message-success {
+  color: var(--sp-primary); /* Uses your green for success */
 }
 
 /* ===========================
@@ -350,4 +354,144 @@ body {
 
 .sp-address__dropdown-indicator {
   color: #868e96;
+}
+
+/* Overlay for temporary centered message */
+.sp-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.4);
+  pointer-events: none;
+}
+.sp-overlay-message {
+  background: var(--sp-primary);
+  color: #fff;
+  padding: 32px 48px;
+  border-radius: 24px;
+  font-weight: 700;
+  font-size: 1.5rem;
+  box-shadow: 0 8px 32px 0 rgba(49, 163, 84, 0.13);
+  text-align: center;
+  pointer-events: auto;
+}
+
+.sp-property-cards-grid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: 1fr;
+  margin-bottom: 32px;
+}
+
+.sp-property-card {
+  background: #f8fafc;
+  border: 1px solid var(--sp-border);
+  border-radius: var(--sp-radius);
+  padding: 24px;
+  box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.06);
+  position: relative;
+}
+
+.sp-property-card-title {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.sp-property-card-description {
+  margin-top: 8px;
+  color: #444;
+}
+
+.sp-property-card-actions {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  gap: 10px;
+}
+
+.sp-property-card-action-btn {
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #bbb;
+  font-size: 1.1rem;
+  opacity: 0.7;
+}
+.sp-property-card-action-btn[disabled] {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+/* Overlay for temporary centered message */
+.sp-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.4);
+  pointer-events: none;
+}
+.sp-overlay-message {
+  background: var(--sp-primary);
+  color: #fff;
+  padding: 32px 48px;
+  border-radius: 24px;
+  font-weight: 700;
+  font-size: 1.5rem;
+  box-shadow: 0 8px 32px 0 rgba(49, 163, 84, 0.13);
+  text-align: center;
+  pointer-events: auto;
+}
+
+.sp-property-cards-grid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: 1fr;
+  margin-bottom: 32px;
+}
+
+.sp-property-card {
+  background: #f8fafc;
+  border: 1px solid var(--sp-border);
+  border-radius: var(--sp-radius);
+  padding: 24px;
+  box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.06);
+  position: relative;
+}
+
+.sp-property-card-title {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.sp-property-card-description {
+  margin-top: 8px;
+  color: #444;
+}
+
+.sp-property-card-actions {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  gap: 10px;
+}
+
+.sp-property-card-action-btn {
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #bbb;
+  font-size: 1.1rem;
+  opacity: 0.7;
+}
+.sp-property-card-action-btn[disabled] {
+  cursor: not-allowed;
+  opacity: 0.4;
 }
