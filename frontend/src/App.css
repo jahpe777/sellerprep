@@ -7,6 +7,7 @@
   --sp-font: "Segoe UI", "Inter", Arial, sans-serif;
 }
 
+/* Layout and Base */
 html,
 body,
 #root {
@@ -14,14 +15,13 @@ body,
   min-height: 100vh;
   background: var(--sp-bg);
 }
-
 body {
   font-family: var(--sp-font);
   margin: 0;
   width: 100vw;
 }
 
-/* Navbar styles */
+/* Navbar */
 .sp-navbar {
   width: 100%;
   height: 56px;
@@ -81,7 +81,6 @@ body {
   padding-top: 48px;
   padding-bottom: 48px;
 }
-
 .sp-content-card {
   width: 100%;
   max-width: 800px;
@@ -94,6 +93,7 @@ body {
   box-sizing: border-box;
 }
 
+/* Responsive adjustments */
 @media (max-width: 900px) {
   .sp-navbar {
     padding: 0 10px;
@@ -113,9 +113,18 @@ body {
   .sp-content-card {
     padding: 16px 2vw;
   }
+  .sp-property-card {
+    padding: 14px;
+  }
+  .sp-property-card-actions {
+    justify-content: flex-end;
+    align-self: stretch;
+    margin-top: 10px;
+    position: static;
+  }
 }
 
-/* Section and form styles */
+/* Section, list, and empty states */
 .sp-section-title {
   font-size: 1.3rem;
   font-weight: 700;
@@ -125,6 +134,85 @@ body {
 .sp-properties-list {
   margin-bottom: 32px;
 }
+.sp-properties-empty {
+  color: #868e96;
+  margin-bottom: 20px;
+  font-size: 1rem;
+  text-align: center;
+}
+
+/* Property card grid and cards */
+.sp-property-cards-grid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: 1fr;
+  margin-bottom: 32px;
+}
+.sp-property-card {
+  background: #f8fafc;
+  border: 1px solid var(--sp-border);
+  border-radius: var(--sp-radius);
+  padding: 24px;
+  box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.06);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.sp-property-card-title {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+.sp-property-card-description {
+  margin-top: 8px;
+  color: #444;
+}
+
+/* Card action icons */
+.sp-property-card-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+  align-self: flex-end;
+  position: absolute;
+  top: 16px;
+  right: 16px;
+}
+.sp-property-card-action-btn {
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #bbb;
+  font-size: 1.1rem;
+  opacity: 0.7;
+  min-width: 40px;
+  min-height: 40px;
+  border-radius: 50%;
+  transition: background 0.2s;
+}
+.sp-property-card-action-btn:active,
+.sp-property-card-action-btn:focus {
+  background: #e6e6e6;
+  opacity: 1;
+}
+.sp-property-card-action-btn[disabled] {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+/* Edit mode: move actions under inputs, larger icons */
+.sp-property-card.editing .sp-property-card-actions {
+  position: static;
+  margin-top: 12px;
+  justify-content: flex-end;
+  align-self: flex-end;
+  gap: 12px;
+}
+.sp-property-card.editing .sp-property-card-action-btn {
+  font-size: 1.3rem;
+}
+
+/* Add property form and property form inputs */
 .sp-property-form label {
   font-weight: 600;
   color: #222;
@@ -153,6 +241,16 @@ body {
   border-color: var(--sp-primary);
   background: #fff;
 }
+.sp-property-form-input {
+  width: 100%;
+  font-size: 1rem;
+  padding: 8px;
+  border-radius: var(--sp-radius);
+  border: 1px solid var(--sp-border);
+  background: #fff;
+  margin-bottom: 8px;
+  box-sizing: border-box;
+}
 .sp-property-btn {
   max-width: 220px;
   width: 100%;
@@ -166,22 +264,42 @@ body {
   box-shadow: 0 2px 10px 0 rgba(49, 163, 84, 0.08);
   cursor: pointer;
   margin-top: 10px;
-  transition: background 0.2s;
-  display: block;
   margin-left: auto;
   margin-right: auto;
+  transition: background 0.2s;
+  display: block;
 }
 .sp-property-btn:hover {
   background: #23803a;
 }
-.sp-properties-empty {
-  color: #868e96;
-  margin-bottom: 20px;
-  font-size: 1rem;
+
+/* Overlay for centered messages */
+.sp-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.4);
+  pointer-events: none;
+}
+.sp-overlay-message {
+  background: var(--sp-primary);
+  color: #fff;
+  padding: 32px 48px;
+  border-radius: 24px;
+  font-weight: 700;
+  font-size: 1.5rem;
+  box-shadow: 0 8px 32px 0 rgba(49, 163, 84, 0.13);
   text-align: center;
+  pointer-events: auto;
+}
+.sp-overlay-message.error {
+  background: #e74c3c;
 }
 
-/* Login and Auth styles */
+/* Auth/login card styles */
 .center-container {
   min-height: 100vh;
   display: flex;
@@ -189,7 +307,6 @@ body {
   justify-content: center;
   background: var(--sp-bg);
 }
-
 .sp-login-card {
   max-width: 380px;
   width: 100%;
@@ -200,7 +317,6 @@ body {
   border: 1px solid var(--sp-border);
   text-align: center;
 }
-
 .sp-logo {
   font-size: 2.1rem;
   font-weight: 700;
@@ -208,14 +324,12 @@ body {
   margin-bottom: 8px;
   letter-spacing: -1px;
 }
-
 .sp-login-title {
   font-size: 1.25rem;
   font-weight: 700;
   margin-bottom: 24px;
   color: #313a3d;
 }
-
 .sp-form label {
   font-weight: 600;
   color: #222;
@@ -223,7 +337,6 @@ body {
   margin-bottom: 4px;
   text-align: left;
 }
-
 .sp-form input {
   width: 100%;
   font-size: 1rem;
@@ -236,12 +349,10 @@ body {
   box-sizing: border-box;
   transition: border-color 0.2s;
 }
-
 .sp-form input:focus {
   border-color: var(--sp-primary);
   background: #fff;
 }
-
 .sp-btn {
   width: 100%;
   padding: 12px 0;
@@ -256,11 +367,9 @@ body {
   margin-top: 6px;
   margin-bottom: 10px;
 }
-
 .sp-btn:hover {
   background: #23803a;
 }
-
 .sp-link-btn {
   background: none;
   border: none;
@@ -274,12 +383,11 @@ body {
   display: block;
   width: 100%;
 }
-
 .sp-link-btn:hover {
   color: #23803a;
 }
 
-/* Success and error messages */
+/* Messages */
 .sp-message {
   font-size: 1rem;
   color: var(--sp-danger);
@@ -287,14 +395,10 @@ body {
   min-height: 22px;
 }
 .sp-message-success {
-  color: var(--sp-primary); /* Uses your green for success */
+  color: var(--sp-primary);
 }
 
-/* ===========================
-   Google Places Autocomplete
-   Custom styles for react-google-places-autocomplete
-   =========================== */
-
+/* Google Places Autocomplete tweaks */
 .sp-address__control {
   min-height: 44px;
   background: #f8fafc;
@@ -305,24 +409,20 @@ body {
   font-size: 1rem;
   transition: border-color 0.2s;
 }
-
 .sp-address__control--is-focused {
   border-color: var(--sp-primary);
   background: #fff;
 }
-
 .sp-address__input {
   color: #222;
   font-size: 1rem;
   min-height: 1.6em;
   background: transparent;
 }
-
 .sp-address__placeholder {
   color: #868e96;
   font-size: 1rem;
 }
-
 .sp-address__menu {
   border-radius: var(--sp-radius);
   border: 1px solid var(--sp-border);
@@ -332,166 +432,21 @@ body {
   margin-top: 4px;
   z-index: 9999;
 }
-
 .sp-address__option {
   padding: 10px 16px;
   cursor: pointer;
 }
-
 .sp-address__option--is-focused {
   background: #e9f6ee;
   color: var(--sp-primary);
 }
-
 .sp-address__single-value {
   color: #222;
   font-size: 1rem;
 }
-
 .sp-address__indicator-separator {
   display: none;
 }
-
 .sp-address__dropdown-indicator {
   color: #868e96;
-}
-
-/* Overlay for temporary centered message */
-.sp-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255, 255, 255, 0.4);
-  pointer-events: none;
-}
-.sp-overlay-message {
-  background: var(--sp-primary);
-  color: #fff;
-  padding: 32px 48px;
-  border-radius: 24px;
-  font-weight: 700;
-  font-size: 1.5rem;
-  box-shadow: 0 8px 32px 0 rgba(49, 163, 84, 0.13);
-  text-align: center;
-  pointer-events: auto;
-}
-
-.sp-property-cards-grid {
-  display: grid;
-  gap: 20px;
-  grid-template-columns: 1fr;
-  margin-bottom: 32px;
-}
-
-.sp-property-card {
-  background: #f8fafc;
-  border: 1px solid var(--sp-border);
-  border-radius: var(--sp-radius);
-  padding: 24px;
-  box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.06);
-  position: relative;
-}
-
-.sp-property-card-title {
-  font-weight: 700;
-  font-size: 1.1rem;
-}
-
-.sp-property-card-description {
-  margin-top: 8px;
-  color: #444;
-}
-
-.sp-property-card-actions {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  display: flex;
-  gap: 10px;
-}
-
-.sp-property-card-action-btn {
-  border: none;
-  background: none;
-  cursor: pointer;
-  color: #bbb;
-  font-size: 1.1rem;
-  opacity: 0.7;
-}
-.sp-property-card-action-btn[disabled] {
-  cursor: not-allowed;
-  opacity: 0.4;
-}
-
-/* Overlay for temporary centered message */
-.sp-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255, 255, 255, 0.4);
-  pointer-events: none;
-}
-.sp-overlay-message {
-  background: var(--sp-primary);
-  color: #fff;
-  padding: 32px 48px;
-  border-radius: 24px;
-  font-weight: 700;
-  font-size: 1.5rem;
-  box-shadow: 0 8px 32px 0 rgba(49, 163, 84, 0.13);
-  text-align: center;
-  pointer-events: auto;
-}
-
-.sp-property-cards-grid {
-  display: grid;
-  gap: 20px;
-  grid-template-columns: 1fr;
-  margin-bottom: 32px;
-}
-
-.sp-property-card {
-  background: #f8fafc;
-  border: 1px solid var(--sp-border);
-  border-radius: var(--sp-radius);
-  padding: 24px;
-  box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.06);
-  position: relative;
-}
-
-.sp-property-card-title {
-  font-weight: 700;
-  font-size: 1.1rem;
-}
-
-.sp-property-card-description {
-  margin-top: 8px;
-  color: #444;
-}
-
-.sp-property-card-actions {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  display: flex;
-  gap: 10px;
-}
-
-.sp-property-card-action-btn {
-  border: none;
-  background: none;
-  cursor: pointer;
-  color: #bbb;
-  font-size: 1.1rem;
-  opacity: 0.7;
-}
-.sp-property-card-action-btn[disabled] {
-  cursor: not-allowed;
-  opacity: 0.4;
 }

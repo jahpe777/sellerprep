@@ -5,12 +5,13 @@ const api = axios.create();
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    // If we get a 401 (Unauthorized), clear tokens and redirect
     if (error.response && error.response.status === 401) {
       localStorage.removeItem("access");
       localStorage.removeItem("refresh");
-      // Redirect to login
-      window.location.href = "/";
+      window.dispatchEvent(new Event("sessionExpired"));
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 2000);
     }
     return Promise.reject(error);
   }
