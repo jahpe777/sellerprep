@@ -1,5 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 interface AuthResponse {
   access: string;
@@ -12,8 +14,14 @@ export default function AuthPage() {
   const [email, setEmail] = useState("");
   const [isLogin, setIsLogin] = useState(true);
   const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
   const API_BASE = "/api"; // adjust if needed
+
+  useEffect(() => {
+    localStorage.removeItem("access");
+    localStorage.removeItem("refresh");
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,9 +35,13 @@ export default function AuthPage() {
         });
         localStorage.setItem("access", res.data.access);
         localStorage.setItem("refresh", res.data.refresh);
-        setMessage("Login successful!");
-      } catch (err) {
-        setMessage("Login failed.");
+        setMessage("Login successful! Redirecting...");
+        setTimeout(() => navigate("/dashboard"), 700);
+      } catch (err: any) {
+        setMessage(
+          err.response?.data?.detail ||
+            "Login failed. Please check your credentials."
+        );
       }
     } else {
       // REGISTER
@@ -41,51 +53,66 @@ export default function AuthPage() {
         });
         setMessage("Registration successful. You can now log in.");
         setIsLogin(true);
-      } catch (err) {
-        setMessage("Registration failed.");
+      } catch (err: any) {
+        setMessage(
+          err.response?.data?.error ||
+            "Registration failed. Please check your input."
+        );
       }
     }
   };
 
   return (
-    <div style={{ maxWidth: "400px", margin: "0 auto" }}>
-      <h2>{isLogin ? "Login" : "Register"}</h2>
-      <form onSubmit={handleSubmit}>
+    <div className="sp-container">
+      <div className="sp-title">SellerPrep</div>
+      <h2 style={{ textAlign: "center", marginBottom: 18 }}>
+        {isLogin ? "Login" : "Register"}
+      </h2>
+      <form className="sp-form" onSubmit={handleSubmit}>
         <div>
           <label>Username:</label>
-          <br />
           <input
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
+            autoFocus
+            autoComplete="username"
           />
         </div>
         <div>
           <label>Password:</label>
-          <br />
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
+            autoComplete={isLogin ? "current-password" : "new-password"}
           />
         </div>
         {!isLogin && (
           <div>
             <label>Email:</label>
-            <br />
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              autoComplete="email"
             />
           </div>
         )}
-        <button type="submit">{isLogin ? "Login" : "Register"}</button>
+        <button className="sp-btn" type="submit">
+          {isLogin ? "Login" : "Register"}
+        </button>
       </form>
-      <p>{message}</p>
-      <button onClick={() => setIsLogin(!isLogin)}>
+      <p
+        className={`sp-message${
+          message.includes("success") ? " sp-success" : ""
+        }`}
+      >
+        {message}
+      </p>
+      <button className="sp-link-btn" onClick={() => setIsLogin(!isLogin)}>
         {isLogin ? "Need to register?" : "Already have an account?"}
       </button>
     </div>
