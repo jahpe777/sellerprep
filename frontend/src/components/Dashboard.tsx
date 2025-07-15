@@ -1,6 +1,8 @@
+// src/components/Dashboard.tsx
 import React, { useEffect, useState } from "react";
 import api from "../axiosConfig";
 import AddressAutocomplete from "./AddressAutocomplete";
+import DocumentsComponent from "./DocumentsComponent";
 
 const API_URL = "/api/properties/";
 
@@ -10,8 +12,21 @@ interface Property {
   description?: string;
 }
 
+interface Topic {
+  id: number;
+  property: number;
+  title: string;
+  created_at: string;
+}
+
 const Dashboard: React.FC = () => {
   const [properties, setProperties] = useState<Property[]>([]);
+  const [topics, setTopics] = useState<Record<number, Topic[]>>({});
+  const [activeTopic, setActiveTopic] = useState<Record<number, number>>({});
+  const [newTopicTitle, setNewTopicTitle] = useState<Record<number, string>>(
+    {}
+  );
+
   const [address, setAddress] = useState("");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
@@ -19,7 +34,6 @@ const Dashboard: React.FC = () => {
   const [success, setSuccess] = useState("");
   const [showOverlay, setShowOverlay] = useState(false);
 
-  // Edit state
   const [editId, setEditId] = useState<number | null>(null);
   const [editAddress, setEditAddress] = useState("");
   const [editDescription, setEditDescription] = useState("");
@@ -29,26 +43,61 @@ const Dashboard: React.FC = () => {
     // eslint-disable-next-line
   }, []);
 
-  const fetchProperties = async () => {
+  async function fetchProperties() {
     setError("");
     try {
       const res = await api.get(API_URL, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("access")}`,
-        },
+        headers: { Authorization: `Bearer ${localStorage.getItem("access")}` },
       });
       setProperties(res.data);
+      // for each property, load its topics
+      res.data.forEach((p: Property) => fetchTopics(p.id));
     } catch (err: any) {
       setError(err.response?.data?.detail || "Failed to load properties.");
     }
-  };
+  }
 
-  const handleAddressSelect = (val: any) => {
+  async function fetchTopics(propertyId: number) {
+    try {
+      const res = await api.get("/api/topics/", {
+        params: { property: propertyId },
+        headers: { Authorization: `Bearer ${localStorage.getItem("access")}` },
+      });
+      setTopics((prev) => ({ ...prev, [propertyId]: res.data }));
+      // if none active yet, default to first
+      if (res.data.length && !activeTopic[propertyId]) {
+        setActiveTopic((prev) => ({ ...prev, [propertyId]: res.data[0].id }));
+      }
+    } catch (err) {
+      console.error("Could not load topics", err);
+    }
+  }
+
+  async function handleAddTopic(propertyId: number) {
+    const title = newTopicTitle[propertyId]?.trim();
+    if (!title) return;
+    try {
+      await api.post(
+        "/api/topics/",
+        { property: propertyId, title },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("access")}`,
+          },
+        }
+      );
+      setNewTopicTitle((prev) => ({ ...prev, [propertyId]: "" }));
+      fetchTopics(propertyId);
+    } catch (err) {
+      console.error("Could not add topic", err);
+    }
+  }
+
+  function handleAddressSelect(val: any) {
     setAddress(val.label || val.address || "");
-  };
+  }
 
-  // ADD PROPERTY
-  const handleSubmit = async (e: React.FormEvent) => {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
     setSuccess("");
@@ -80,36 +129,34 @@ const Dashboard: React.FC = () => {
       );
     }
     setLoading(false);
-  };
+  }
 
-  // DELETE PROPERTY
-  const handleDelete = async (id: number) => {
+  async function handleDelete(id: number) {
     if (!window.confirm("Are you sure you want to delete this property?"))
       return;
     try {
       await api.delete(`${API_URL}${id}/`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("access")}`,
-        },
+        headers: { Authorization: `Bearer ${localStorage.getItem("access")}` },
       });
       setProperties((prev) => prev.filter((p) => p.id !== id));
     } catch (err: any) {
       setError(err.response?.data?.detail || "Failed to delete property.");
     }
-  };
+  }
 
-  // EDIT PROPERTY
-  const startEdit = (property: Property) => {
-    setEditId(property.id);
-    setEditAddress(property.address);
-    setEditDescription(property.description || "");
-  };
-  const cancelEdit = () => {
+  function startEdit(p: Property) {
+    setEditId(p.id);
+    setEditAddress(p.address);
+    setEditDescription(p.description || "");
+  }
+
+  function cancelEdit() {
     setEditId(null);
     setEditAddress("");
     setEditDescription("");
-  };
-  const handleEditSave = async (id: number) => {
+  }
+
+  async function handleEditSave(id: number) {
     try {
       await api.put(
         `${API_URL}${id}/`,
@@ -131,7 +178,7 @@ const Dashboard: React.FC = () => {
     } catch (err: any) {
       setError(err.response?.data?.detail || "Failed to update property.");
     }
-  };
+  }
 
   return (
     <main className="sp-main-content">
@@ -159,7 +206,10 @@ const Dashboard: React.FC = () => {
                       onChange={(e) => setEditDescription(e.target.value)}
                       style={{ minHeight: 36, marginBottom: 8 }}
                     />
-                    <div className="sp-property-card-actions">
+                    <div
+                      className="sp-property-card-actions"
+                      style={{ zIndex: 10 }}
+                    >
                       <button
                         className="sp-property-card-action-btn"
                         onClick={() => handleEditSave(p.id)}
@@ -186,7 +236,10 @@ const Dashboard: React.FC = () => {
                         {p.description}
                       </div>
                     )}
-                    <div className="sp-property-card-actions">
+                    <div
+                      className="sp-property-card-actions"
+                      style={{ zIndex: 10 }}
+                    >
                       <button
                         className="sp-property-card-action-btn"
                         onClick={() => startEdit(p)}
@@ -203,12 +256,68 @@ const Dashboard: React.FC = () => {
                         🗑️
                       </button>
                     </div>
+
+                    {/* 🔹 Topic Tabs */}
+                    <div className="sp-tabs">
+                      {(topics[p.id] || []).map((t) => (
+                        <button
+                          key={t.id}
+                          className={`sp-tab-button ${
+                            activeTopic[p.id] === t.id ? "active" : ""
+                          }`}
+                          onClick={() =>
+                            setActiveTopic((prev) => ({
+                              ...prev,
+                              [p.id]: t.id,
+                            }))
+                          }
+                        >
+                          {t.title}
+                        </button>
+                      ))}
+                      <input
+                        className="sp-property-form-input"
+                        placeholder="New section…"
+                        value={newTopicTitle[p.id] || ""}
+                        onChange={(e) =>
+                          setNewTopicTitle((prev) => ({
+                            ...prev,
+                            [p.id]: e.target.value,
+                          }))
+                        }
+                        style={{ width: "auto", marginLeft: 8 }}
+                      />
+                      <button
+                        className="sp-property-btn"
+                        onClick={() => handleAddTopic(p.id)}
+                      >
+                        + Add
+                      </button>
+                    </div>
+
+                    {/* 🔹 Documents under the active topic */}
+                    {activeTopic[p.id] && (
+                      <div style={{ marginTop: 16 }}>
+                        <div className="sp-tabs">
+                          <button className="sp-tab-button active">
+                            Documents
+                          </button>
+                        </div>
+                        <div className="sp-tab-content">
+                          <DocumentsComponent
+                            propertyId={p.id}
+                            topicId={activeTopic[p.id]}
+                          />
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )
               )}
             </div>
           )}
         </div>
+
         <div className="sp-section-title">Add Property</div>
         <form className="sp-property-form" onSubmit={handleSubmit}>
           <label>Address</label>
