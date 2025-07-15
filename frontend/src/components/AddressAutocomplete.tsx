@@ -1,7 +1,7 @@
-import React from "react";
-import GooglePlacesAutocomplete, {
-  geocodeByPlaceId,
-} from "react-google-places-autocomplete";
+import React, { useRef } from "react";
+import { LoadScript, Autocomplete } from "@react-google-maps/api";
+
+const libraries: "places"[] = ["places"];
 
 interface Props {
   onSelect: (data: {
@@ -13,33 +13,43 @@ interface Props {
 }
 
 const AddressAutocomplete: React.FC<Props> = ({ onSelect }) => {
+  const autocompleteRef = useRef<any>(null);
+
+  const handlePlaceChanged = () => {
+    const place = autocompleteRef.current.getPlace();
+    if (place && place.formatted_address) {
+      onSelect({
+        address: place.formatted_address,
+        lat: place.geometry?.location?.lat(),
+        lng: place.geometry?.location?.lng(),
+        details: place,
+      });
+    }
+  };
+
   return (
-    <GooglePlacesAutocomplete
-      apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
-      selectProps={{
-        placeholder: "Enter address",
-        classNamePrefix: "sp-address",
-        menuPortalTarget: document.body, // makes menu popups render at body for z-index
-        menuPosition: "fixed",
-        onChange: async (val: any) => {
-          if (val && val.value && val.value.place_id) {
-            const results = await geocodeByPlaceId(val.value.place_id);
-            const result = results[0];
-            let lat, lng;
-            if (result.geometry && result.geometry.location) {
-              lat = result.geometry.location.lat();
-              lng = result.geometry.location.lng();
-            }
-            onSelect({
-              address: val.label,
-              lat,
-              lng,
-              details: result,
-            });
-          }
-        },
-      }}
-    />
+    <LoadScript
+      googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
+      libraries={libraries}
+      loadingElement={<div>Loading...</div>}
+    >
+      <Autocomplete
+        onLoad={(auto) => (autocompleteRef.current = auto)}
+        onPlaceChanged={handlePlaceChanged}
+      >
+        <input
+          type="text"
+          placeholder="Enter address"
+          className="sp-address__input"
+          style={{
+            width: "100%",
+            padding: 10,
+            borderRadius: 8,
+            border: "1px solid #e1e6ea",
+          }}
+        />
+      </Autocomplete>
+    </LoadScript>
   );
 };
 
