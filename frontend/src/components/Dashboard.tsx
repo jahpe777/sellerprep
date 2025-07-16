@@ -1,8 +1,8 @@
 // src/components/Dashboard.tsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, KeyboardEvent } from "react";
 import api from "../axiosConfig";
 import AddressAutocomplete from "./AddressAutocomplete";
-import DocumentsComponent from "./DocumentsComponent";
+import Documents from "./Documents";
 
 const API_URL = "/api/properties/";
 
@@ -12,7 +12,7 @@ interface Property {
   description?: string;
 }
 
-interface Topic {
+interface Section {
   id: number;
   property: number;
   title: string;
@@ -21,11 +21,16 @@ interface Topic {
 
 const Dashboard: React.FC = () => {
   const [properties, setProperties] = useState<Property[]>([]);
-  const [topics, setTopics] = useState<Record<number, Topic[]>>({});
-  const [activeTopic, setActiveTopic] = useState<Record<number, number>>({});
-  const [newTopicTitle, setNewTopicTitle] = useState<Record<number, string>>(
+  const [sections, setSections] = useState<Record<number, Section[]>>({});
+  const [activeSection, setActiveSection] = useState<Record<number, number>>(
     {}
   );
+  const [isAddingSection, setIsAddingSection] = useState<
+    Record<number, boolean>
+  >({});
+  const [newSectionTitle, setNewSectionTitle] = useState<
+    Record<number, string>
+  >({});
 
   const [address, setAddress] = useState("");
   const [description, setDescription] = useState("");
@@ -50,35 +55,33 @@ const Dashboard: React.FC = () => {
         headers: { Authorization: `Bearer ${localStorage.getItem("access")}` },
       });
       setProperties(res.data);
-      // for each property, load its topics
-      res.data.forEach((p: Property) => fetchTopics(p.id));
+      res.data.forEach((p: Property) => fetchSections(p.id));
     } catch (err: any) {
       setError(err.response?.data?.detail || "Failed to load properties.");
     }
   }
 
-  async function fetchTopics(propertyId: number) {
+  async function fetchSections(propertyId: number) {
     try {
-      const res = await api.get("/api/topics/", {
+      const res = await api.get("/api/sections/", {
         params: { property: propertyId },
         headers: { Authorization: `Bearer ${localStorage.getItem("access")}` },
       });
-      setTopics((prev) => ({ ...prev, [propertyId]: res.data }));
-      // if none active yet, default to first
-      if (res.data.length && !activeTopic[propertyId]) {
-        setActiveTopic((prev) => ({ ...prev, [propertyId]: res.data[0].id }));
+      setSections((prev) => ({ ...prev, [propertyId]: res.data }));
+      if (res.data.length && !activeSection[propertyId]) {
+        setActiveSection((prev) => ({ ...prev, [propertyId]: res.data[0].id }));
       }
     } catch (err) {
-      console.error("Could not load topics", err);
+      console.error("Could not load sections", err);
     }
   }
 
-  async function handleAddTopic(propertyId: number) {
-    const title = newTopicTitle[propertyId]?.trim();
+  async function handleAddSection(propertyId: number) {
+    const title = newSectionTitle[propertyId]?.trim();
     if (!title) return;
     try {
       await api.post(
-        "/api/topics/",
+        "/api/sections/",
         { property: propertyId, title },
         {
           headers: {
@@ -86,11 +89,21 @@ const Dashboard: React.FC = () => {
           },
         }
       );
-      setNewTopicTitle((prev) => ({ ...prev, [propertyId]: "" }));
-      fetchTopics(propertyId);
+      setNewSectionTitle((prev) => ({ ...prev, [propertyId]: "" }));
+      setIsAddingSection((prev) => ({ ...prev, [propertyId]: false }));
+      fetchSections(propertyId);
     } catch (err) {
-      console.error("Could not add topic", err);
+      console.error("Could not add section", err);
     }
+  }
+
+  function onSectionKey(
+    e: KeyboardEvent<HTMLInputElement>,
+    propertyId: number
+  ) {
+    if (e.key === "Enter") handleAddSection(propertyId);
+    if (e.key === "Escape")
+      setIsAddingSection((prev) => ({ ...prev, [propertyId]: false }));
   }
 
   function handleAddressSelect(val: any) {
@@ -122,11 +135,7 @@ const Dashboard: React.FC = () => {
       }, 2200);
       await fetchProperties();
     } catch (err: any) {
-      setError(
-        err.response?.data?.detail ||
-          JSON.stringify(err.response?.data) ||
-          "Failed to add property."
-      );
+      setError(err.response?.data?.detail || "Failed to add property.");
     }
     setLoading(false);
   }
@@ -194,6 +203,22 @@ const Dashboard: React.FC = () => {
               {properties.map((p) =>
                 editId === p.id ? (
                   <div key={p.id} className="sp-property-card editing">
+                    <div className="sp-property-card-actions">
+                      <button
+                        className="sp-property-card-action-btn"
+                        onClick={() => handleEditSave(p.id)}
+                        title="Save"
+                      >
+                        💾
+                      </button>
+                      <button
+                        className="sp-property-card-action-btn"
+                        onClick={cancelEdit}
+                        title="Cancel"
+                      >
+                        ✖️
+                      </button>
+                    </div>
                     <input
                       className="sp-property-form-input"
                       value={editAddress}
@@ -206,27 +231,6 @@ const Dashboard: React.FC = () => {
                       onChange={(e) => setEditDescription(e.target.value)}
                       style={{ minHeight: 36, marginBottom: 8 }}
                     />
-                    <div
-                      className="sp-property-card-actions"
-                      style={{ zIndex: 10 }}
-                    >
-                      <button
-                        className="sp-property-card-action-btn"
-                        onClick={() => handleEditSave(p.id)}
-                        title="Save"
-                        style={{ color: "#31a354" }}
-                      >
-                        💾
-                      </button>
-                      <button
-                        className="sp-property-card-action-btn"
-                        onClick={cancelEdit}
-                        title="Cancel"
-                        style={{ color: "#c0392b" }}
-                      >
-                        ✖️
-                      </button>
-                    </div>
                   </div>
                 ) : (
                   <div key={p.id} className="sp-property-card">
@@ -236,10 +240,7 @@ const Dashboard: React.FC = () => {
                         {p.description}
                       </div>
                     )}
-                    <div
-                      className="sp-property-card-actions"
-                      style={{ zIndex: 10 }}
-                    >
+                    <div className="sp-property-card-actions">
                       <button
                         className="sp-property-card-action-btn"
                         onClick={() => startEdit(p)}
@@ -251,22 +252,21 @@ const Dashboard: React.FC = () => {
                         className="sp-property-card-action-btn"
                         onClick={() => handleDelete(p.id)}
                         title="Delete"
-                        style={{ color: "#c0392b" }}
+                        style={{ color: "var(--sp-danger)" }}
                       >
                         🗑️
                       </button>
                     </div>
 
-                    {/* 🔹 Topic Tabs */}
                     <div className="sp-tabs">
-                      {(topics[p.id] || []).map((t) => (
+                      {(sections[p.id] || []).map((t) => (
                         <button
                           key={t.id}
                           className={`sp-tab-button ${
-                            activeTopic[p.id] === t.id ? "active" : ""
+                            activeSection[p.id] === t.id ? "active" : ""
                           }`}
                           onClick={() =>
-                            setActiveTopic((prev) => ({
+                            setActiveSection((prev) => ({
                               ...prev,
                               [p.id]: t.id,
                             }))
@@ -275,38 +275,52 @@ const Dashboard: React.FC = () => {
                           {t.title}
                         </button>
                       ))}
-                      <input
-                        className="sp-property-form-input"
-                        placeholder="New section…"
-                        value={newTopicTitle[p.id] || ""}
-                        onChange={(e) =>
-                          setNewTopicTitle((prev) => ({
-                            ...prev,
-                            [p.id]: e.target.value,
-                          }))
-                        }
-                        style={{ width: "auto", marginLeft: 8 }}
-                      />
-                      <button
-                        className="sp-property-btn"
-                        onClick={() => handleAddTopic(p.id)}
-                      >
-                        + Add
-                      </button>
+                      {isAddingSection[p.id] ? (
+                        <input
+                          className="sp-section-input"
+                          autoFocus
+                          placeholder="New section…"
+                          value={newSectionTitle[p.id] || ""}
+                          onChange={(e) =>
+                            setNewSectionTitle((prev) => ({
+                              ...prev,
+                              [p.id]: e.target.value,
+                            }))
+                          }
+                          onKeyDown={(e) => onSectionKey(e, p.id)}
+                          onBlur={() =>
+                            setIsAddingSection((prev) => ({
+                              ...prev,
+                              [p.id]: false,
+                            }))
+                          }
+                        />
+                      ) : (
+                        <button
+                          className="sp-tab-add"
+                          onClick={() =>
+                            setIsAddingSection((prev) => ({
+                              ...prev,
+                              [p.id]: true,
+                            }))
+                          }
+                        >
+                          + Section
+                        </button>
+                      )}
                     </div>
 
-                    {/* 🔹 Documents under the active topic */}
-                    {activeTopic[p.id] && (
-                      <div style={{ marginTop: 16 }}>
+                    {activeSection[p.id] && (
+                      <div className="sp-docs-form">
                         <div className="sp-tabs">
                           <button className="sp-tab-button active">
                             Documents
                           </button>
                         </div>
                         <div className="sp-tab-content">
-                          <DocumentsComponent
+                          <Documents
                             propertyId={p.id}
-                            topicId={activeTopic[p.id]}
+                            sectionId={activeSection[p.id]}
                           />
                         </div>
                       </div>
@@ -324,6 +338,7 @@ const Dashboard: React.FC = () => {
           <AddressAutocomplete onSelect={handleAddressSelect} />
           <label>Description</label>
           <textarea
+            className="sp-property-form-input"
             placeholder="Description (optional)"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
@@ -341,7 +356,9 @@ const Dashboard: React.FC = () => {
 
       {showOverlay && (
         <div className="sp-overlay">
-          <div className="sp-overlay-message">Property added!</div>
+          <div className="sp-overlay-message">
+            {success || "Property added!"}
+          </div>
         </div>
       )}
     </main>

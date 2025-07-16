@@ -1,10 +1,11 @@
-from django.db import models
-from django.contrib.auth.models import User
+# src/api/models.py
 
+from django.db import models
+from django.conf import settings
 
 class Property(models.Model):
     owner = models.ForeignKey(
-        User,
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="properties"
     )
@@ -15,78 +16,65 @@ class Property(models.Model):
     def __str__(self):
         return self.address
 
-
-class Topic(models.Model):
-    """
-    A user-defined grouping (e.g. 'Kitchen', 'Roof', etc.) within a Property.
-    """
+class Section(models.Model):  # renamed from Topic
     property = models.ForeignKey(
         Property,
-        on_delete=models.CASCADE,
-        related_name="topics"
+        related_name='sections',
+        on_delete=models.CASCADE
     )
-    title = models.CharField(
-        max_length=255,
-        default="",       # provide a default so existing rows (none) are populated
-        blank=True        # allow form validation to accept empty initial values
-    )
+    title = models.CharField(max_length=200)
     created_at = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return f"{self.title} ({self.property.address})"
+    class Meta:
+        verbose_name = 'section'
+        verbose_name_plural = 'sections'
 
+    def __str__(self):
+        return self.title
 
 class Document(models.Model):
     property = models.ForeignKey(
         Property,
+        related_name='documents',
         on_delete=models.CASCADE,
-        related_name="documents",
         null=True,
         blank=True
     )
-    topic = models.ForeignKey(
-        Topic,
+    section = models.ForeignKey(
+        Section,
+        related_name='documents',
         on_delete=models.CASCADE,
-        related_name="documents",
         null=True,
         blank=True
     )
-    file = models.FileField(upload_to="documents/")
+    file = models.FileField(upload_to='documents/')
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        prop_addr = self.property.address if self.property else "Unassigned"
-        return f"Document for {prop_addr} - {self.file.name}"
-
+        return self.file.name
 
 class PropertyImage(models.Model):
     property = models.ForeignKey(
         Property,
-        on_delete=models.CASCADE,
-        related_name="images",
-        null=True,
-        blank=True
+        related_name='images',
+        on_delete=models.CASCADE
     )
-    image = models.ImageField(upload_to="property_images/")
+    image = models.ImageField(upload_to='property_images/')
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        prop_addr = self.property.address if self.property else "Unassigned"
-        return f"Image for {prop_addr} - {self.image.name}"
-
+        return self.image.name
 
 class Note(models.Model):
     property = models.ForeignKey(
         Property,
-        on_delete=models.CASCADE,
-        related_name="notes",
-        null=True,
-        blank=True
+        related_name='notes',
+        on_delete=models.CASCADE
     )
-    topic = models.ForeignKey(
-        Topic,
+    section = models.ForeignKey(
+        Section,
+        related_name='notes',
         on_delete=models.CASCADE,
-        related_name="notes",
         null=True,
         blank=True
     )
@@ -94,6 +82,4 @@ class Note(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        prop_addr = self.property.address if self.property else "Unassigned"
-        date_str = self.created_at.strftime('%Y-%m-%d')
-        return f"Note for {prop_addr} ({date_str})"
+        return f"Note {self.id} on {self.property}"

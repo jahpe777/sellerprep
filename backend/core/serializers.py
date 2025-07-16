@@ -1,23 +1,26 @@
-from rest_framework import serializers
-from .models import (
-    Property,
-    Topic,
-    Document,
-    PropertyImage,
-    Note,
-)
+# src/api/serializers.py
 
-class TopicSerializer(serializers.ModelSerializer):
+from rest_framework import serializers
+import os
+from .models import Property, Section, Document, PropertyImage, Note
+
+class SectionSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Topic
+        model = Section
         fields = ["id", "property", "title", "created_at"]
         read_only_fields = ["id", "created_at"]
 
 class DocumentSerializer(serializers.ModelSerializer):
+    url = serializers.FileField(source="file", read_only=True)
+    filename = serializers.SerializerMethodField()
+
     class Meta:
         model = Document
-        fields = ["id", "property", "topic", "file", "uploaded_at"]
-        read_only_fields = ["id", "uploaded_at"]
+        fields = ["id", "property", "section", "file", "url", "filename", "uploaded_at"]
+        read_only_fields = ["id", "url", "filename", "uploaded_at"]
+
+    def get_filename(self, obj):
+        return os.path.basename(obj.file.name)
 
 class PropertyImageSerializer(serializers.ModelSerializer):
     class Meta:
@@ -28,11 +31,11 @@ class PropertyImageSerializer(serializers.ModelSerializer):
 class NoteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Note
-        fields = ["id", "property", "content", "created_at"]
+        fields = ["id", "property", "section", "content", "created_at"]
         read_only_fields = ["id", "created_at"]
 
 class PropertySerializer(serializers.ModelSerializer):
-    topics = TopicSerializer(many=True, read_only=True)
+    sections = SectionSerializer(many=True, read_only=True)
     documents = DocumentSerializer(many=True, read_only=True)
     images = PropertyImageSerializer(many=True, read_only=True)
     notes = NoteSerializer(many=True, read_only=True)
@@ -45,7 +48,7 @@ class PropertySerializer(serializers.ModelSerializer):
             "address",
             "description",
             "created_at",
-            "topics",
+            "sections",
             "documents",
             "images",
             "notes",

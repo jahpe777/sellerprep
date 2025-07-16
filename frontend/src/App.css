@@ -1,3 +1,11 @@
+/* remove bullet‐points everywhere */
+ul,
+ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
 :root {
   --sp-primary: #31a354;
   --sp-bg: #f7fafb;
@@ -159,6 +167,9 @@ body {
   flex-direction: column;
   min-width: 0;
 }
+.sp-property-card.editing {
+  padding-top: 48px;
+}
 .sp-property-card-title {
   font-weight: 700;
   font-size: 1.1rem;
@@ -168,19 +179,20 @@ body {
   color: #444;
 }
 
-/* Card action icons */
+/* Card action icons (flat style) */
 .sp-property-card-actions {
-  display: flex;
-  gap: 10px;
-  margin-top: 12px;
-  align-self: flex-end;
   position: absolute;
   top: 16px;
   right: 16px;
+  display: flex;
+  gap: 10px;
+  z-index: 10;
 }
 .sp-property-card-action-btn {
-  border: none;
   background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
   cursor: pointer;
   color: #bbb;
   font-size: 1.1rem;
@@ -198,15 +210,6 @@ body {
 .sp-property-card-action-btn[disabled] {
   cursor: not-allowed;
   opacity: 0.4;
-}
-
-/* Edit mode: move actions under inputs, larger icons */
-.sp-property-card.editing .sp-property-card-actions {
-  position: static;
-  margin-top: 12px;
-  justify-content: flex-end;
-  align-self: flex-end;
-  gap: 12px;
 }
 .sp-property-card.editing .sp-property-card-action-btn {
   font-size: 1.3rem;
@@ -460,13 +463,12 @@ body {
 .sp-property-tabs {
   margin-top: 16px;
 }
-
 .sp-tabs {
   display: flex;
   gap: 8px;
   margin-bottom: 10px;
+  margin-top: 10px;
 }
-
 .sp-tab-button,
 .sp-tab {
   background: #f0f4f8;
@@ -478,19 +480,16 @@ body {
   transition: all 0.2s ease;
   color: #333;
 }
-
 .sp-tab-button:hover,
 .sp-tab:hover {
   background: #e6f2ec;
 }
-
 .sp-tab-button.active,
 .sp-tab.active {
   background: var(--sp-primary);
   color: white;
   border-color: var(--sp-primary);
 }
-
 .sp-tab-content {
   padding: 10px;
   font-size: 0.95rem;
@@ -522,5 +521,72 @@ body {
   cursor: not-allowed;
 }
 .sp-docs-btn:hover:not(:disabled) {
+  background: #23803a;
+}
+
+/* "+ Section" pill */
+.sp-tab-add {
+  background: #f0f4f8;
+  border: 1px solid var(--sp-border);
+  border-radius: var(--sp-radius);
+  padding: 8px 16px;
+  font-weight: 600;
+  color: #333;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.sp-tab-add:hover {
+  background: #e6f2ec;
+}
+
+/* Inline Section Input */
+.sp-section-input {
+  padding: 8px 12px;
+  border: 1px solid var(--sp-border);
+  border-radius: 4px;
+  min-width: 140px;
+}
+
+/* Section content spacing */
+.sp-tab-content {
+  margin-top: 16px;
+}
+
+/* style the file‑input container like other inputs */
+.sp-docs-form input[type="file"] {
+  background: #fff;
+  border: 1px solid var(--sp-border);
+  border-radius: var(--sp-radius);
+  padding: 8px;
+  font-size: 1rem;
+  color: #444;
+  cursor: pointer;
+}
+
+/* style the built‑in button inside the file input */
+.sp-docs-form input[type="file"]::-webkit-file-upload-button {
+  background: var(--sp-primary);
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: var(--sp-radius);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.sp-docs-form input[type="file"]::-ms-browse {
+  background: var(--sp-primary);
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: var(--sp-radius);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.sp-docs-form input[type="file"]::-webkit-file-upload-button:hover,
+.sp-docs-form input[type="file"]::-ms-browse:hover {
   background: #23803a;
 }
