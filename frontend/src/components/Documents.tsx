@@ -1,5 +1,4 @@
 // src/components/Documents.tsx
-
 import React, { useState, useEffect, useRef } from "react";
 import api from "../axiosConfig";
 
@@ -71,10 +70,10 @@ const Documents: React.FC<DocumentsProps> = ({ propertyId, sectionId }) => {
   async function handleDelete(docId: number) {
     if (!window.confirm("Delete this document?")) return;
     try {
-      await api.delete(`/api/documents/${doc.id}/`, {
+      await api.delete(`/api/documents/${docId}/`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("access")}` },
       });
-      setDocuments((docs) => docs.filter((d) => d.id !== doc.id));
+      setDocuments((docs) => docs.filter((d) => d.id !== docId));
     } catch (err) {
       console.error("Failed to delete", err);
     }
@@ -84,34 +83,31 @@ const Documents: React.FC<DocumentsProps> = ({ propertyId, sectionId }) => {
     <div>
       <ul style={{ listStyle: "none", padding: 0 }}>
         {documents.map((doc) => {
-          const ext = doc.filename.split(".").pop() || "";
-          const isPreviewable = /^(pdf|png|jpe?g|gif)$/i.test(ext);
+          const viewUrl = `${window.location.origin}/api/documents/${doc.id}/view/`;
+          const googlePreviewUrl = `https://docs.google.com/gview?url=${encodeURIComponent(
+            viewUrl
+          )}&embedded=true`;
 
           return (
             <li key={doc.id} style={{ marginBottom: 12 }}>
               <span style={{ marginRight: 8 }}>{doc.filename}</span>
-              {isPreviewable ? (
-                <a
-                  href={`/api/documents/${doc.id}/view/`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ marginRight: 8 }}
-                >
-                  View
-                </a>
-              ) : (
-                <a
-                  href={`/api/documents/${doc.id}/view/`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ marginRight: 8 }}
-                >
-                  View
-                </a>
-              )}
+
+              {/* Preview via Google Docs Viewer */}
+              <a
+                href={googlePreviewUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ marginRight: 8 }}
+              >
+                Preview
+              </a>
+
+              {/* Direct Download */}
               <a href={doc.url} download style={{ marginRight: 8 }}>
                 Download
               </a>
+
+              {/* Delete Action */}
               <button
                 className="sp-property-card-action-btn"
                 onClick={() => handleDelete(doc.id)}

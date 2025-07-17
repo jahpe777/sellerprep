@@ -93,6 +93,10 @@ USE_TZ = True
 # Static files
 STATIC_URL = "static/"
 
+# ── ADDED: Media settings for image uploads
+MEDIA_URL  = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
+
 # Default primary key field type
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
@@ -111,3 +115,5 @@ SIMPLE_JWT = {
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
 }
+
+TEMPLATES[0]["DIRS"].append(BASE_DIR / "templates")

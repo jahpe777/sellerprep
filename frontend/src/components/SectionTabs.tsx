@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+// src/components/SectionTabs.tsx
+import React, { useState, KeyboardEvent } from "react";
 
 export interface Section {
   id: number;
   property: number;
-  name: string;
+  title: string;
+  created_at: string;
 }
 
 interface SectionTabsProps {
@@ -15,48 +17,58 @@ interface SectionTabsProps {
 }
 
 const SectionTabs: React.FC<SectionTabsProps> = ({
-  propertyId,
   sections,
   activeSectionId,
   onSelectSection,
   onAddSection,
 }) => {
+  const [isAdding, setIsAdding] = useState(false);
   const [newName, setNewName] = useState("");
 
+  function handleKey(e: KeyboardEvent<HTMLInputElement>) {
+    if (e.key === "Enter" && newName.trim()) {
+      onAddSection(newName.trim());
+      setNewName("");
+      setIsAdding(false);
+    }
+    if (e.key === "Escape") {
+      setNewName("");
+      setIsAdding(false);
+    }
+  }
+
   return (
-    <div>
-      <div className="sp-tabs">
-        {sections.map((t) => (
-          <button
-            key={t.id}
-            className={`sp-tab ${activeSectionId === t.id ? "active" : ""}`}
-            onClick={() => onSelectSection(t.id)}
-          >
-            {t.name}
-          </button>
-        ))}
-      </div>
-      <div style={{ marginTop: 8, marginBottom: 16 }}>
+    <div className="sp-tabs">
+      {sections.map((sec) => (
+        <button
+          key={sec.id}
+          className={`sp-tab-button ${
+            activeSectionId === sec.id ? "active" : ""
+          }`}
+          onClick={() => onSelectSection(sec.id)}
+        >
+          {sec.title}
+        </button>
+      ))}
+
+      {isAdding ? (
         <input
-          type="text"
-          placeholder="New tab name"
+          autoFocus
+          placeholder="New section…"
           value={newName}
           onChange={(e) => setNewName(e.target.value)}
-          className="sp-property-form-input"
-          style={{ width: "200px", marginRight: 8 }}
-        />
-        <button
-          className="sp-property-btn"
-          onClick={() => {
-            if (newName.trim()) {
-              onAddSection(newName.trim());
-              setNewName("");
-            }
+          onKeyDown={handleKey}
+          onBlur={() => {
+            setNewName("");
+            setIsAdding(false);
           }}
-        >
-          + Add Tab
+          className="sp-tab-button sp-section-input"
+        />
+      ) : (
+        <button className="sp-tab-button" onClick={() => setIsAdding(true)}>
+          + Section
         </button>
-      </div>
+      )}
     </div>
   );
 };

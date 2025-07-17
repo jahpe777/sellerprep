@@ -11,7 +11,9 @@ const PropertyTabs: React.FC<PropertyTabsProps> = ({
   renderImages,
   renderNotes,
 }) => {
-  const [activeTab, setActiveTab] = useState("documents");
+  const [activeTab, setActiveTab] = useState<"documents" | "images" | "notes">(
+    "documents"
+  );
 
   const renderActiveTab = () => {
     switch (activeTab) {

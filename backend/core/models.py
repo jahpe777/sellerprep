@@ -16,7 +16,8 @@ class Property(models.Model):
     def __str__(self):
         return self.address
 
-class Section(models.Model):  # renamed from Topic
+
+class Section(models.Model):
     property = models.ForeignKey(
         Property,
         related_name='sections',
@@ -31,6 +32,7 @@ class Section(models.Model):  # renamed from Topic
 
     def __str__(self):
         return self.title
+
 
 class Document(models.Model):
     property = models.ForeignKey(
@@ -53,17 +55,26 @@ class Document(models.Model):
     def __str__(self):
         return self.file.name
 
+
 class PropertyImage(models.Model):
     property = models.ForeignKey(
         Property,
         related_name='images',
         on_delete=models.CASCADE
     )
+    section = models.ForeignKey(
+        Section,
+        related_name='images',
+        on_delete=models.CASCADE,
+        null=True,    # ← allow NULL for existing rows
+        blank=True    # ← allow blank in forms
+    )
     image = models.ImageField(upload_to='property_images/')
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.image.name
+
 
 class Note(models.Model):
     property = models.ForeignKey(

@@ -1,5 +1,3 @@
-# src/api/serializers.py
-
 from rest_framework import serializers
 import os
 from .models import Property, Section, Document, PropertyImage, Note
@@ -16,17 +14,33 @@ class DocumentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Document
-        fields = ["id", "property", "section", "file", "url", "filename", "uploaded_at"]
+        fields = [
+            "id", "property", "section",
+            "file", "url", "filename", "uploaded_at"
+        ]
         read_only_fields = ["id", "url", "filename", "uploaded_at"]
 
     def get_filename(self, obj):
         return os.path.basename(obj.file.name)
 
 class PropertyImageSerializer(serializers.ModelSerializer):
+    url = serializers.SerializerMethodField()
+    filename = serializers.SerializerMethodField()
+
     class Meta:
         model = PropertyImage
-        fields = ["id", "property", "image", "uploaded_at"]
-        read_only_fields = ["id", "uploaded_at"]
+        fields = [
+            "id", "property", "section",
+            "image", "url", "filename", "uploaded_at"
+        ]
+        read_only_fields = ["id", "url", "filename", "uploaded_at"]
+
+    def get_url(self, obj):
+        request = self.context.get("request")
+        return request.build_absolute_uri(obj.image.url)
+
+    def get_filename(self, obj):
+        return os.path.basename(obj.image.name)
 
 class NoteSerializer(serializers.ModelSerializer):
     class Meta:
@@ -43,14 +57,7 @@ class PropertySerializer(serializers.ModelSerializer):
     class Meta:
         model = Property
         fields = [
-            "id",
-            "owner",
-            "address",
-            "description",
-            "created_at",
-            "sections",
-            "documents",
-            "images",
-            "notes",
+            "id", "owner", "address", "description", "created_at",
+            "sections", "documents", "images", "notes",
         ]
         read_only_fields = ["id", "owner", "created_at"]
