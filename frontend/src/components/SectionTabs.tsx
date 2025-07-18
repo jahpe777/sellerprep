@@ -1,5 +1,6 @@
 // src/components/SectionTabs.tsx
-import React, { useState, KeyboardEvent } from "react";
+import React, { useState } from "react";
+import type { KeyboardEvent } from "react";
 
 export interface Section {
   id: number;

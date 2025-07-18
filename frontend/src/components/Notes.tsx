@@ -1,5 +1,6 @@
 // src/components/Notes.tsx
-import React, { useState, useEffect, useRef, KeyboardEvent } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import type { KeyboardEvent } from "react";
 import api from "../axiosConfig";
 
 interface NotesProps {
@@ -19,7 +20,7 @@ const Notes: React.FC<NotesProps> = ({ propertyId, sectionId }) => {
   const [error, setError] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // 1) Fetch notes when propertyId or sectionId changes
+  // Fetch notes when propertyId or sectionId changes
   useEffect(() => {
     if (!propertyId || !sectionId) return;
     api
@@ -31,8 +32,8 @@ const Notes: React.FC<NotesProps> = ({ propertyId, sectionId }) => {
       .catch((err) => console.error("Failed to load notes", err));
   }, [propertyId, sectionId]);
 
-  // 2) Add a new note
-  async function handleAdd(e: React.FormEvent) {
+  // Add a new note
+  async function handleAdd(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const text = content.trim();
     if (!text) return;
@@ -60,7 +61,7 @@ const Notes: React.FC<NotesProps> = ({ propertyId, sectionId }) => {
     }
   }
 
-  // 3) Delete
+  // Delete a note
   async function handleDelete(id: number) {
     if (!window.confirm("Delete this note?")) return;
     try {
@@ -73,9 +74,12 @@ const Notes: React.FC<NotesProps> = ({ propertyId, sectionId }) => {
     }
   }
 
-  // Optional: submit on Ctrl+Enter
-  function onKeyDown(e: KeyboardEvent) {
-    if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) handleAdd(e as any);
+  // Submit on Ctrl+Enter
+  function onKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
+    if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+      // Treat as form submission
+      handleAdd(e as unknown as React.FormEvent<HTMLFormElement>);
+    }
   }
 
   return (

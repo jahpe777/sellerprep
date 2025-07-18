@@ -2,13 +2,16 @@ import React from "react";
 import type { Property, Section } from "../types";
 import PropertyCard from "./PropertyCard";
 
+// Include notes alongside documents and images
+type ContentTab = "documents" | "images" | "notes";
+
 interface Props {
   properties: Property[];
   sections: Record<number, Section[]>;
   activeSection: Record<number, number>;
-  activeContentTab: Record<number, "documents" | "images">;
+  activeContentTab: Record<number, ContentTab>;
   onSectionChange: (pid: number, sid: number) => void;
-  onContentTabChange: (pid: number, tab: "documents" | "images") => void;
+  onContentTabChange: (pid: number, tab: ContentTab) => void;
   onDelete: (pid: number) => void;
   onEditStart: (pid: number) => void;
   onEditSave: (pid: number, address: string, description: string) => void;
