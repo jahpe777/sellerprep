@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import api from "../axiosConfig";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const API_BASE = "/api";
 
@@ -20,12 +20,22 @@ function getErrorMsg(err: any): string {
 }
 
 const AuthPage: React.FC = () => {
+  const location = useLocation();
   const [mode, setMode] = useState<AuthMode>("login");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState<"error" | "success" | "">("");
   const navigate = useNavigate();
+
+  // Set mode based on current route
+  useEffect(() => {
+    if (location.pathname === "/register") {
+      setMode("register");
+    } else {
+      setMode("login");
+    }
+  }, [location.pathname]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -85,7 +95,7 @@ const AuthPage: React.FC = () => {
         <button
           className="sp-link-btn"
           onClick={() => {
-            setMode(mode === "login" ? "register" : "login");
+            navigate(mode === "login" ? "/register" : "/login");
             setMessage("");
             setMessageType("");
           }}

@@ -89,21 +89,21 @@ const Documents: React.FC<DocumentsProps> = ({ propertyId, sectionId }) => {
           )}&embedded=true`;
 
           return (
-            <li key={doc.id} style={{ marginBottom: 12 }}>
-              <span style={{ marginRight: 8 }}>{doc.filename}</span>
+            <li key={doc.id} className="sp-doc-item">
+              <span className="sp-doc-filename">{doc.filename}</span>
 
               {/* Preview via Google Docs Viewer */}
               <a
                 href={googlePreviewUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                style={{ marginRight: 8 }}
+                className="sp-doc-link secondary"
               >
                 Preview
               </a>
 
               {/* Direct Download */}
-              <a href={doc.url} download style={{ marginRight: 8 }}>
+              <a href={doc.url} download className="sp-doc-link">
                 Download
               </a>
 
@@ -127,7 +127,6 @@ const Documents: React.FC<DocumentsProps> = ({ propertyId, sectionId }) => {
         <input
           ref={inputRef}
           type="file"
-          className="sp-property-form-input"
           onChange={handleFileChange}
         />
         <button

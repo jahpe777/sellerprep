@@ -10,6 +10,7 @@ const API_URL = "/api/properties/";
 const Dashboard: React.FC = () => {
   const [properties, setProperties] = useState<Property[]>([]);
   const [sections, setSections] = useState<Record<number, Section[]>>({});
+  const [sectionsLoaded, setSectionsLoaded] = useState<Record<number, boolean>>({});
   const [activeSection, setActiveSection] = useState<Record<number, number>>(
     {}
   );
@@ -31,6 +32,7 @@ const Dashboard: React.FC = () => {
         headers: { Authorization: `Bearer ${localStorage.getItem("access")}` },
       });
       setProperties(res.data);
+      // Load sections for all existing properties to preserve existing data
       res.data.forEach((p) => fetchSections(p.id));
     } catch (err: any) {
       setError(err.response?.data?.detail || "Failed to load properties.");
@@ -44,6 +46,7 @@ const Dashboard: React.FC = () => {
         headers: { Authorization: `Bearer ${localStorage.getItem("access")}` },
       });
       setSections((prev) => ({ ...prev, [propertyId]: res.data }));
+      setSectionsLoaded((prev) => ({ ...prev, [propertyId]: true }));
       if (res.data.length && !activeSection[propertyId]) {
         setActiveSection((prev) => ({
           ...prev,
@@ -116,31 +119,50 @@ const Dashboard: React.FC = () => {
     }
   }
 
+  async function handleAddSection(propertyId: number, name: string) {
+    try {
+      await api.post(
+        "/api/sections/",
+        { property: propertyId, title: name },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("access")}`,
+          },
+        }
+      );
+      // Reload sections for this property
+      await fetchSections(propertyId);
+    } catch (err: any) {
+      setError(err.response?.data?.detail || "Failed to add section.");
+    }
+  }
+
   return (
-    <main className="sp-main-content">
-      <div className="sp-content-card">
-        {error && <div className="sp-message">{error}</div>}
+    <>
+      {error && <div className="sp-message">{error}</div>}
 
-        <PropertyList
-          properties={properties}
-          sections={sections}
-          activeSection={activeSection}
-          activeContentTab={activeContentTab}
-          onSectionChange={(pid, sid) =>
-            setActiveSection((prev) => ({ ...prev, [pid]: sid }))
-          }
-          onContentTabChange={(pid, tab) =>
-            setActiveContentTab((prev) => ({ ...prev, [pid]: tab }))
-          }
-          onDelete={handleDelete}
-          onEditStart={handleEditStart}
-          onEditSave={handleEditSave}
-          editId={editId}
-        />
+      <PropertyList
+        properties={properties}
+        sections={sections}
+        activeSection={activeSection}
+        activeContentTab={activeContentTab}
+        onSectionChange={(pid, sid) =>
+          setActiveSection((prev) => ({ ...prev, [pid]: sid }))
+        }
+        onContentTabChange={(pid, tab) =>
+          setActiveContentTab((prev) => ({ ...prev, [pid]: tab }))
+        }
+        onDelete={handleDelete}
+        onEditStart={handleEditStart}
+        onEditSave={handleEditSave}
+        editId={editId}
+        onLoadSections={fetchSections}
+        onAddSection={handleAddSection}
+        sectionsLoaded={sectionsLoaded}
+      />
 
-        <AddPropertyForm onSubmit={handleAddProperty} />
-      </div>
-    </main>
+      <AddPropertyForm onSubmit={handleAddProperty} />
+    </>
   );
 };
 

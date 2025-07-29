@@ -5,6 +5,7 @@ import type { Property } from "../types";
 import SectionTabs from "./SectionTabs";
 import ContentTabs from "./ContentTabs";
 import EditPropertyForm from "./EditPropertyForm";
+import SectionGuide from "./SectionGuide";
 
 interface Props {
   property: Property;
@@ -17,6 +18,9 @@ interface Props {
   onEditStart: () => void;
   onEditSave: (address: string, description: string) => void;
   isEditing: boolean;
+  isCollapsed: boolean;
+  onToggleCollapse: () => void;
+  onAddSection: (name: string) => void;
 }
 
 const PropertyCard: React.FC<Props> = ({
@@ -30,6 +34,9 @@ const PropertyCard: React.FC<Props> = ({
   onEditStart,
   onEditSave,
   isEditing,
+  isCollapsed,
+  onToggleCollapse,
+  onAddSection,
 }) => {
   const handleExport = async () => {
     try {
@@ -50,7 +57,7 @@ const PropertyCard: React.FC<Props> = ({
   };
 
   return (
-    <div className={`sp-property-card${isEditing ? " editing" : ""}`}>
+    <div className={`sp-property-card${isEditing ? " editing" : ""}${isCollapsed ? " collapsed" : ""}`}>
       {isEditing ? (
         <EditPropertyForm
           address={property.address}
@@ -85,31 +92,41 @@ const PropertyCard: React.FC<Props> = ({
             </button>
           </div>
 
-          <div className="sp-property-card-title">{property.address}</div>
-          {property.description && (
-            <div className="sp-property-card-description">
-              {property.description}
-            </div>
-          )}
+          <div className="sp-property-card-title" onClick={onToggleCollapse}>
+            <span className="sp-collapse-icon">▼</span>
+            <span>{property.address}</span>
+          </div>
+          
+          <div className="sp-property-content">
+            {property.description && (
+              <div className="sp-property-card-description">
+                {property.description}
+              </div>
+            )}
 
-          <SectionTabs
-            propertyId={property.id}
-            sections={sections}
-            activeSectionId={activeSectionId}
-            onSelectSection={onSectionChange}
-            onAddSection={() => {}}
-          />
+            <SectionTabs
+              propertyId={property.id}
+              sections={sections}
+              activeSectionId={activeSectionId}
+              onSelectSection={onSectionChange}
+              onAddSection={onAddSection}
+            />
 
-          {activeSectionId != null && (
-            <div className="sp-docs-form">
-              <ContentTabs
-                propertyId={property.id}
-                sectionId={activeSectionId}
-                activeTab={activeContentTab}
-                onTabChange={onContentTabChange}
-              />
-            </div>
-          )}
+            {sections.length === 0 && (
+              <SectionGuide onAddSection={onAddSection} />
+            )}
+
+            {activeSectionId != null && sections.length > 0 && (
+              <div className="sp-content-area">
+                <ContentTabs
+                  propertyId={property.id}
+                  sectionId={activeSectionId}
+                  activeTab={activeContentTab}
+                  onTabChange={onContentTabChange}
+                />
+              </div>
+            )}
+          </div>
         </>
       )}
     </div>

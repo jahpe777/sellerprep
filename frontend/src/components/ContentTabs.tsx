@@ -38,15 +38,17 @@ const ContentTabs: React.FC<Props> = ({
       </button>
     </div>
 
-    <div className="sp-tab-content">
-      {activeTab === "documents" ? (
-        <Documents propertyId={propertyId} sectionId={sectionId} />
-      ) : activeTab === "images" ? (
-        <Images propertyId={propertyId} sectionId={sectionId} />
-      ) : (
-        <Notes propertyId={propertyId} sectionId={sectionId} />
-      )}
-    </div>
+    {activeTab && (
+      <div className="sp-tab-content">
+        {activeTab === "documents" ? (
+          <Documents propertyId={propertyId} sectionId={sectionId} />
+        ) : activeTab === "images" ? (
+          <Images propertyId={propertyId} sectionId={sectionId} />
+        ) : (
+          <Notes propertyId={propertyId} sectionId={sectionId} />
+        )}
+      </div>
+    )}
   </>
 );
 
