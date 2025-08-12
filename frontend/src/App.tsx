@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import AuthPage from "./components/AuthPage";
 import Dashboard from "./components/Dashboard";
 import LandingPage from "./components/LandingPage";
+import AdminPanel from "./components/AdminPanel";
 import PrivateRoute from "./PrivateRoute";
 import Layout from "./components/Layout";
 import Navbar from "./components/Navbar";
@@ -38,6 +39,14 @@ export default function App() {
                     <Dashboard />
                   </div>
                 </main>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              <PrivateRoute>
+                <AdminPanel />
               </PrivateRoute>
             }
           />

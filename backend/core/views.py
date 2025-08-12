@@ -12,7 +12,7 @@ from django.template.loader import render_to_string
 
 from weasyprint import HTML
 
-from .models import Property, Section, Document, PropertyImage, Note
+from .models import Property, Section, Document, PropertyImage, Note, UserProfile, Payment
 from .serializers import (
     PropertySerializer,
     SectionSerializer,
@@ -60,6 +60,23 @@ class PropertyViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=["get"], url_path="export")
     def export(self, request, pk=None):
         prop = self.get_object()
+        
+        # Check export permissions
+        user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+        
+        # Check if user can export for free or has paid for this property
+        can_export_free = user_profile.can_export_free
+        has_paid = Payment.objects.filter(
+            user=request.user,
+            property=prop,
+            status='succeeded'
+        ).exists()
+        
+        if not can_export_free and not has_paid:
+            return Response(
+                {'error': 'Payment required to export this property. Please complete payment first.'},
+                status=status.HTTP_402_PAYMENT_REQUIRED
+            )
 
         # Gather all related items
         all_sections = list(prop.sections.order_by("created_at"))
@@ -112,6 +129,11 @@ class PropertyViewSet(viewsets.ModelViewSet):
                     base_url=request.build_absolute_uri("/"))
         pdf  = html.write_pdf()
 
+        # Increment export count if this is a first free export
+        if can_export_free and user_profile.properties_exported == 0:
+            user_profile.properties_exported += 1
+            user_profile.save()
+        
         response = HttpResponse(pdf, content_type="application/pdf")
         response["Content-Disposition"] = (
             f'attachment; filename="property_{prop.id}.pdf"'

@@ -2,6 +2,79 @@
 
 from django.db import models
 from django.conf import settings
+from django.contrib.auth.models import User
+
+
+class UserProfile(models.Model):
+    USER_TYPES = [
+        ('individual', 'Individual'),
+        ('agent', 'Agent'),
+        ('client', 'Client'),
+        ('admin', 'Admin'),
+    ]
+    
+    SUBSCRIPTION_STATUS = [
+        ('none', 'None'),
+        ('active', 'Active'),
+        ('cancelled', 'Cancelled'),
+        ('past_due', 'Past Due'),
+    ]
+    
+    SUBSCRIPTION_TIERS = [
+        ('starter', 'Starter Agent'),
+        ('professional', 'Professional Agent'),
+        ('team', 'Team/Brokerage'),
+    ]
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user_type = models.CharField(max_length=20, choices=USER_TYPES, default='individual')
+    parent_agent = models.ForeignKey(
+        User, 
+        on_delete=models.CASCADE, 
+        null=True, 
+        blank=True,
+        related_name='clients'
+    )
+    subscription_status = models.CharField(max_length=20, choices=SUBSCRIPTION_STATUS, default='none')
+    subscription_tier = models.CharField(max_length=20, choices=SUBSCRIPTION_TIERS, null=True, blank=True)
+    stripe_customer_id = models.CharField(max_length=255, null=True, blank=True)
+    stripe_subscription_id = models.CharField(max_length=255, null=True, blank=True)
+    properties_exported = models.IntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.user.username} ({self.user_type})"
+
+    @property
+    def can_export_free(self):
+        # Admins can always export free
+        if self.user_type == 'admin':
+            return True
+        # Agent subscribers export free
+        if self.subscription_status == 'active':
+            return True
+        # Clients of agent subscribers export free
+        if self.parent_agent and hasattr(self.parent_agent, 'userprofile'):
+            return self.parent_agent.userprofile.subscription_status == 'active'
+        # First property is free for individuals
+        if self.properties_exported == 0:
+            return True
+        return False
+
+
+class Payment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    property = models.ForeignKey('Property', on_delete=models.CASCADE)
+    stripe_payment_intent_id = models.CharField(max_length=255)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    currency = models.CharField(max_length=3, default='usd')
+    status = models.CharField(max_length=50)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Payment {self.id} - ${self.amount} by {self.user.username}"
+
 
 class Property(models.Model):
     owner = models.ForeignKey(

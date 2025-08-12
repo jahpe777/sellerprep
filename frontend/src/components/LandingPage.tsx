@@ -8,20 +8,18 @@ const LandingPage: React.FC = () => {
       <section className="sp-hero">
         <div className="sp-hero-content">
           <h1 className="sp-hero-title">
-            Organize Your Home's History,<br />
-            <span className="sp-hero-highlight">Maximize Your Sale Value</span>
+The Complete Property Documentation Platform<br />
+            <span className="sp-hero-highlight">For Agents & Sellers</span>
           </h1>
           <p className="sp-hero-subtitle">
-            SellerPrep helps homeowners document repairs, upgrades, and maintenance 
-            to create comprehensive property records that increase buyer confidence 
-            and sale prices.
+Empower your listings with complete property histories. SellerPrep helps real estate professionals and their seller clients document every repair, upgrade, and improvement to justify higher prices and close deals faster.
           </p>
           <div className="sp-hero-actions">
             <a href="/register" className="sp-hero-btn sp-hero-btn-primary">
-              Start Organizing Free
+Start Your First Property
             </a>
             <a href="#how-it-works" className="sp-hero-btn sp-hero-btn-secondary">
-              See How It Works
+See How Agents Use It
             </a>
           </div>
         </div>
@@ -71,28 +69,28 @@ const LandingPage: React.FC = () => {
       <section className="sp-solution" id="how-it-works">
         <div className="sp-container">
           <h2 className="sp-section-title">
-            Your Complete Property Documentation System
+            Streamline Your Listing with Complete Property Records
           </h2>
           <div className="sp-features-grid">
             <div className="sp-feature">
               <div className="sp-feature-number">1</div>
               <div className="sp-feature-content">
-                <h3>Organize by Room & System</h3>
-                <p>Create sections for Kitchen, HVAC, Plumbing, and more. Upload photos, receipts, and warranty information in one place.</p>
+                <h3>Comprehensive Property Organization</h3>
+                <p>Help your clients organize repairs, upgrades, and maintenance by room and system. Perfect for pre-listing preparation and MLS enhancement.</p>
               </div>
             </div>
             <div className="sp-feature">
               <div className="sp-feature-number">2</div>
               <div className="sp-feature-content">
-                <h3>Track Repairs & Upgrades</h3>
-                <p>Document every improvement with costs, dates, and contractor information. Build a complete timeline of your property's care.</p>
+                <h3>Document Value-Add Improvements</h3>
+                <p>Create a detailed record of every repair and upgrade with receipts, warranties, and contractor details. Show buyers exactly what they're getting.</p>
               </div>
             </div>
             <div className="sp-feature">
               <div className="sp-feature-number">3</div>
               <div className="sp-feature-content">
-                <h3>Generate Professional Reports</h3>
-                <p>Create polished PDF reports for agents and buyers that showcase your property's value and maintenance history.</p>
+                <h3>Professional Marketing Materials</h3>
+                <p>Generate branded PDF reports to share with potential buyers, showcase in listings, and support higher asking prices with documented improvements.</p>
               </div>
             </div>
           </div>
@@ -103,23 +101,23 @@ const LandingPage: React.FC = () => {
       <section className="sp-benefits" id="benefits">
         <div className="sp-container">
           <h2 className="sp-section-title">
-            Why Organized Sellers Get Better Offers
+            Why Agents & Sellers Choose SellerPrep
           </h2>
           <div className="sp-benefits-grid">
             <div className="sp-benefit">
               <div className="sp-benefit-stat">3-7%</div>
               <div className="sp-benefit-label">Higher Sale Price</div>
-              <p>Well-documented homes sell for 3-7% more than comparable properties</p>
+              <p>Documented improvements justify higher listing prices and give buyers confidence to offer more</p>
             </div>
             <div className="sp-benefit">
-              <div className="sp-benefit-stat">15 Days</div>
-              <div className="sp-benefit-label">Faster Sales</div>
-              <p>Buyers feel confident making offers on properties with complete histories</p>
+              <div className="sp-benefit-stat">40%</div>
+              <div className="sp-benefit-label">Faster Negotiations</div>
+              <p>Reduce back-and-forth during due diligence. Buyers and agents have all the information they need upfront</p>
             </div>
             <div className="sp-benefit">
-              <div className="sp-benefit-stat">90%</div>
-              <div className="sp-benefit-label">Fewer Disputes</div>
-              <p>Transparent documentation prevents post-sale legal issues</p>
+              <div className="sp-benefit-stat">85%</div>
+              <div className="sp-benefit-label">Smoother Closings</div>
+              <p>Complete disclosure documentation reduces inspection surprises and post-sale disputes for agents and clients</p>
             </div>
           </div>
         </div>

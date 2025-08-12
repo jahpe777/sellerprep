@@ -11,6 +11,14 @@ from .views import (
     PropertyImageViewSet,
     NoteViewSet,
 )
+from .payment_views import (
+    create_payment_intent,
+    confirm_payment,
+    check_export_permission,
+    make_user_admin,
+    list_users,
+    check_admin_status,
+)
 
 router = DefaultRouter()
 router.register(r"properties", PropertyViewSet, basename="property")
@@ -23,5 +31,11 @@ urlpatterns = [
     path("token/",         TokenObtainPairView.as_view(),  name="token_obtain_pair"),
     path("token/refresh/", TokenRefreshView.as_view(),     name="token_refresh"),
     path("register/",      register,                       name="register"),
+    path("payments/create-intent/", create_payment_intent, name="create_payment_intent"),
+    path("payments/confirm/", confirm_payment, name="confirm_payment"),
+    path("payments/check-permission/", check_export_permission, name="check_export_permission"),
+    path("admin/make-admin/", make_user_admin, name="make_user_admin"),
+    path("admin/users/", list_users, name="list_users"),
+    path("admin/check-status/", check_admin_status, name="check_admin_status"),
     path("",               include(router.urls)),
 ]

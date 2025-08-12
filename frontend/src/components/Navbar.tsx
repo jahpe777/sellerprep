@@ -1,11 +1,34 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import api from "../axiosConfig";
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const isAuthenticated = localStorage.getItem("access");
   const isDashboard = location.pathname.startsWith("/dashboard");
+  const isAdmin = location.pathname.startsWith("/admin");
+  const [userIsAdmin, setUserIsAdmin] = useState(false);
+
+  useEffect(() => {
+    // Check if user is admin when authenticated
+    const checkAdminStatus = async () => {
+      if (isAuthenticated) {
+        try {
+          // Use lightweight admin check endpoint
+          const response = await api.get('/api/admin/check-status/');
+          setUserIsAdmin(response.data.is_admin);
+        } catch (error) {
+          // Silently fail - user just isn't admin or not authenticated yet
+          setUserIsAdmin(false);
+        }
+      } else {
+        setUserIsAdmin(false);
+      }
+    };
+    
+    checkAdminStatus();
+  }, [isAuthenticated]);
 
   function handleLogout() {
     localStorage.removeItem("access");
@@ -19,11 +42,14 @@ const Navbar: React.FC = () => {
         SellerPrep
       </Link>
 
-      {isDashboard && isAuthenticated ? (
+      {(isDashboard || isAdmin) && isAuthenticated ? (
         // Dashboard navigation for authenticated users
         <>
           <nav className="sp-navbar-title">
             <Link to="/dashboard">Dashboard</Link>
+            {userIsAdmin && (
+              <Link to="/admin">Admin Panel</Link>
+            )}
           </nav>
           <button className="sp-navbar-btn" onClick={handleLogout}>
             Logout
