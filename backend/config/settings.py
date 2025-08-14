@@ -117,3 +117,9 @@ SIMPLE_JWT = {
 }
 
 TEMPLATES[0]["DIRS"].append(BASE_DIR / "templates")
+
+# Custom authentication backend for email login
+AUTHENTICATION_BACKENDS = [
+    'core.authentication.EmailBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]

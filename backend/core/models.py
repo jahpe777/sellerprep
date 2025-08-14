@@ -57,9 +57,7 @@ class UserProfile(models.Model):
         # Clients of agent subscribers export free
         if self.parent_agent and hasattr(self.parent_agent, 'userprofile'):
             return self.parent_agent.userprofile.subscription_status == 'active'
-        # First property is free for individuals
-        if self.properties_exported == 0:
-            return True
+        # Individual users must pay for each property export
         return False
 
 

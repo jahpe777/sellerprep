@@ -24,25 +24,30 @@ from .serializers import (
 
 @api_view(["POST"])
 def register(request):
-    username = request.data.get("username")
-    password = request.data.get("password")
     email = request.data.get("email")
+    password = request.data.get("password")
 
-    if not username or not password or not email:
-        return Response({"error": "All fields required"},
+    if not email or not password:
+        return Response({"error": "Email and password are required"},
                         status=status.HTTP_400_BAD_REQUEST)
-    if User.objects.filter(username=username).exists():
-        return Response({"error": "Username already exists"},
-                        status=status.HTTP_400_BAD_REQUEST)
+    
     if User.objects.filter(email=email).exists():
         return Response({"error": "Email already in use"},
                         status=status.HTTP_400_BAD_REQUEST)
 
+    # Auto-generate username from email (before @ symbol)
+    username = email.split('@')[0]
+    # Ensure username is unique by appending numbers if needed
+    original_username = username
+    counter = 1
+    while User.objects.filter(username=username).exists():
+        username = f"{original_username}{counter}"
+        counter += 1
+
     user = User.objects.create_user(username=username,
-                                    password=password,
-                                    email=email)
+                                    email=email,
+                                    password=password)
     return Response({"message": "User created successfully",
-                     "username": user.username,
                      "email": user.email},
                     status=status.HTTP_201_CREATED)
 

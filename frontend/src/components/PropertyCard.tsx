@@ -1,11 +1,12 @@
 // src/components/PropertyCard.tsx
-import React from "react";
+import React, { useState } from "react";
 import api from "../axiosConfig";
 import type { Property } from "../types";
 import SectionTabs from "./SectionTabs";
 import ContentTabs from "./ContentTabs";
 import EditPropertyForm from "./EditPropertyForm";
 import SectionGuide from "./SectionGuide";
+import PaymentModal from "./PaymentModal";
 
 interface Props {
   property: Property;
@@ -38,6 +39,8 @@ const PropertyCard: React.FC<Props> = ({
   onToggleCollapse,
   onAddSection,
 }) => {
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+
   const handleExport = async () => {
     try {
       const res = await api.get(`/api/properties/${property.id}/export/`, {
@@ -51,9 +54,20 @@ const PropertyCard: React.FC<Props> = ({
       link.href = URL.createObjectURL(blob);
       link.download = `${property.address}.pdf`;
       link.click();
-    } catch (err) {
-      console.error("Export failed", err);
+    } catch (err: any) {
+      // Check if payment is required (HTTP 402)
+      if (err.response?.status === 402) {
+        setShowPaymentModal(true);
+      } else {
+        console.error("Export failed", err);
+        alert("Export failed. Please try again.");
+      }
     }
+  };
+
+  const handlePaymentSuccess = () => {
+    // After successful payment, try export again
+    handleExport();
   };
 
   return (
@@ -129,6 +143,14 @@ const PropertyCard: React.FC<Props> = ({
           </div>
         </>
       )}
+      
+      <PaymentModal
+        isOpen={showPaymentModal}
+        onClose={() => setShowPaymentModal(false)}
+        propertyId={property.id}
+        propertyAddress={property.address}
+        onPaymentSuccess={handlePaymentSuccess}
+      />
     </div>
   );
 };

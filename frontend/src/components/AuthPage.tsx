@@ -6,23 +6,48 @@ const API_BASE = "/api";
 
 type AuthMode = "login" | "register";
 
-// Helper to get a user-friendly error message
+// Helper to get a detailed error message
 function getErrorMsg(err: any): string {
-  if (err.response?.data?.detail) return err.response.data.detail;
+  console.log("Login error details:", err.response?.data, "Status:", err.response?.status);
+  
+  if (err.response?.data?.detail) {
+    return `Error: ${err.response.data.detail}`;
+  }
+  
+  if (err.response?.data?.error) {
+    return `Error: ${err.response.data.error}`;
+  }
+  
   // Handle common field errors like {"username":["..."], "password":["..."]}
   if (err.response?.data && typeof err.response.data === "object") {
-    const messages = Object.values(err.response.data)
-      .map((msgArr) => (Array.isArray(msgArr) ? msgArr.join(" ") : msgArr))
-      .join(" ");
-    return messages;
+    const messages = Object.entries(err.response.data)
+      .map(([field, msgArr]) => {
+        const msgs = Array.isArray(msgArr) ? msgArr.join(" ") : msgArr;
+        return `${field}: ${msgs}`;
+      })
+      .join(", ");
+    if (messages) return `Validation errors: ${messages}`;
   }
-  return "An error occurred. Please try again.";
+  
+  if (err.response?.status === 401) {
+    return "Login failed: Invalid email or password. Please check your credentials.";
+  }
+  
+  if (err.response?.status === 400) {
+    return "Bad request: Please check your input and try again.";
+  }
+  
+  if (err.response?.status >= 500) {
+    return "Server error: Please try again later.";
+  }
+  
+  return `Connection error (${err.response?.status || 'network'}): Please check your connection and try again.`;
 }
 
 const AuthPage: React.FC = () => {
   const location = useLocation();
   const [mode, setMode] = useState<AuthMode>("login");
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState<"error" | "success" | "">("");
@@ -44,7 +69,7 @@ const AuthPage: React.FC = () => {
     try {
       if (mode === "login") {
         const res = await api.post(`${API_BASE}/token/`, {
-          username,
+          username: email,  // Send email as username for JWT
           password,
         });
         localStorage.setItem("access", res.data.access);
@@ -54,7 +79,7 @@ const AuthPage: React.FC = () => {
         // Redirect to dashboard after a short delay for feedback
         setTimeout(() => navigate("/dashboard"), 600);
       } else {
-        await api.post(`${API_BASE}/register/`, { username, password });
+        await api.post(`${API_BASE}/register/`, { email, password });
         setMessage("Registration successful! You can now log in.");
         setMessageType("success");
         setMode("login");
@@ -73,12 +98,12 @@ const AuthPage: React.FC = () => {
           {mode === "login" ? "Log In" : "Sign Up"}
         </div>
         <form className="sp-form" onSubmit={handleSubmit}>
-          <label>Username</label>
+          <label>Email</label>
           <input
-            type="text"
+            type="email"
             autoFocus
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
           />
           <label>Password</label>
