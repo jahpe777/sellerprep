@@ -64,11 +64,17 @@ import os
 # Use DATABASE_URL if available (production), otherwise fall back to individual variables (development)
 DATABASE_URL = os.environ.get('DATABASE_URL')
 
+# Debug: Print DATABASE_URL status for troubleshooting
+print(f"DATABASE_URL exists: {DATABASE_URL is not None}")
+print(f"DATABASE_URL value: {DATABASE_URL}")
+
 if DATABASE_URL and DATABASE_URL.strip():
+    print("Using DATABASE_URL for database configuration")
     DATABASES = {
         "default": dj_database_url.parse(DATABASE_URL)
     }
 else:
+    print("Using individual environment variables for database configuration")
     # Development database configuration
     DATABASES = {
         "default": {
