@@ -59,13 +59,27 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 # Database
 import dj_database_url
+import os
 
-DATABASES = {
-    "default": dj_database_url.config(
-        default=f"postgresql://{config('DB_USER', default='user')}:{config('DB_PASSWORD', default='pass')}@{config('DB_HOST', default='localhost')}:{config('DB_PORT', default='5432')}/{config('DB_NAME', default='sellerprep')}",
-        conn_max_age=600
-    )
-}
+# Use DATABASE_URL if available (production), otherwise fall back to individual variables (development)
+DATABASE_URL = os.environ.get('DATABASE_URL')
+
+if DATABASE_URL:
+    DATABASES = {
+        "default": dj_database_url.parse(DATABASE_URL)
+    }
+else:
+    # Development database configuration
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": config("DB_NAME"),
+            "USER": config("DB_USER"),
+            "PASSWORD": config("DB_PASSWORD"),
+            "HOST": config("DB_HOST", default="localhost"),
+            "PORT": config("DB_PORT", default="5432"),
+        }
+    }
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
