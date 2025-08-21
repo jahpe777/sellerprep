@@ -15,7 +15,7 @@ The Complete Property Documentation Platform<br />
 Empower your listings with complete property histories. SellerPrep helps real estate professionals and their seller clients document every repair, upgrade, and improvement to justify higher prices and close deals faster.
           </p>
           <div className="sp-hero-actions">
-            <a href="/app/register" className="sp-hero-btn sp-hero-btn-primary">
+            <a href="/beta/register" className="sp-hero-btn sp-hero-btn-primary">
 Start Your First Property
             </a>
             <a href="#how-it-works" className="sp-hero-btn sp-hero-btn-secondary">
@@ -129,7 +129,7 @@ See How Agents Use It
           <div className="sp-cta-content">
             <h2>Ready to Maximize Your Home's Value?</h2>
             <p>Join thousands of homeowners who've increased their sale prices with SellerPrep</p>
-            <a href="/app/register" className="sp-cta-btn">
+            <a href="/beta/register" className="sp-cta-btn">
               Start Your Property Portfolio Free
             </a>
           </div>

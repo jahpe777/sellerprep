@@ -62,7 +62,7 @@ const ComingSoon: React.FC = () => {
           </div>
           
           <div className="sp-coming-soon-footer">
-            <a href="/app" className="sp-preview-link">
+            <a href="/beta" className="sp-preview-link">
               Preview the Application →
             </a>
           </div>

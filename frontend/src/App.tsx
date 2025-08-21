@@ -28,14 +28,14 @@ export default function App() {
           {/* Preview Site - Coming Soon */}
           <Route path="/" element={<ComingSoon />} />
           
-          {/* Full Application Routes */}
-          <Route path="/app" element={<LandingPage />} />
-          <Route path="/app/login" element={<AuthPage />} />
-          <Route path="/app/register" element={<AuthPage />} />
+          {/* Beta Application Routes */}
+          <Route path="/beta" element={<LandingPage />} />
+          <Route path="/beta/login" element={<AuthPage />} />
+          <Route path="/beta/register" element={<AuthPage />} />
           
           {/* Protected Routes */}
           <Route
-            path="/app/dashboard/*"
+            path="/beta/dashboard/*"
             element={
               <PrivateRoute>
                 <main className="sp-main-content">
@@ -47,7 +47,7 @@ export default function App() {
             }
           />
           <Route
-            path="/app/admin"
+            path="/beta/admin"
             element={
               <PrivateRoute>
                 <AdminPanel />
@@ -55,7 +55,7 @@ export default function App() {
             }
           />
           
-          {/* Legacy Routes - Redirect to /app */}
+          {/* Legacy Routes - Keep for backward compatibility */}
           <Route path="/login" element={<AuthPage />} />
           <Route path="/register" element={<AuthPage />} />
           <Route

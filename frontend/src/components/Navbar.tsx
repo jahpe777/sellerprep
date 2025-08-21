@@ -6,9 +6,9 @@ const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const isAuthenticated = localStorage.getItem("access");
-  const isDashboard = location.pathname.startsWith("/dashboard") || location.pathname.startsWith("/app/dashboard");
-  const isAdmin = location.pathname.startsWith("/admin") || location.pathname.startsWith("/app/admin");
-  const isAppRoute = location.pathname.startsWith("/app");
+  const isDashboard = location.pathname.startsWith("/dashboard") || location.pathname.startsWith("/beta/dashboard");
+  const isAdmin = location.pathname.startsWith("/admin") || location.pathname.startsWith("/beta/admin");
+  const isBetaRoute = location.pathname.startsWith("/beta");
   const isComingSoon = location.pathname === "/";
   const [userIsAdmin, setUserIsAdmin] = useState(false);
 
@@ -40,7 +40,7 @@ const Navbar: React.FC = () => {
 
   return (
     <header className="sp-navbar">
-      <Link to={isComingSoon ? "/" : "/app"} className="sp-logo sp-navbar-logo">
+      <Link to={isComingSoon ? "/" : "/beta"} className="sp-logo sp-navbar-logo">
         SellerPrep
       </Link>
 
@@ -48,9 +48,9 @@ const Navbar: React.FC = () => {
         // Dashboard navigation for authenticated users
         <>
           <nav className="sp-navbar-title">
-            <Link to={isAppRoute ? "/app/dashboard" : "/dashboard"}>Dashboard</Link>
+            <Link to={isBetaRoute ? "/beta/dashboard" : "/dashboard"}>Dashboard</Link>
             {userIsAdmin && (
-              <Link to={isAppRoute ? "/app/admin" : "/admin"}>Admin Panel</Link>
+              <Link to={isBetaRoute ? "/beta/admin" : "/admin"}>Admin Panel</Link>
             )}
           </nav>
           <button className="sp-navbar-btn" onClick={handleLogout}>
@@ -61,26 +61,26 @@ const Navbar: React.FC = () => {
         // Coming soon page - minimal nav
         <>
           <nav className="sp-navbar-title">
-            <a href="/app">View Demo</a>
+            <a href="/beta">Beta Access</a>
           </nav>
           <div className="sp-navbar-auth">
-            <a href="/app" className="sp-navbar-btn">
-              Preview App
+            <a href="/beta" className="sp-navbar-btn">
+              Try Beta
             </a>
           </div>
         </>
       ) : (
-        // Full app landing page navigation
+        // Beta app landing page navigation
         <>
           <nav className="sp-navbar-title">
             <a href="#how-it-works">How It Works</a>
             <a href="#benefits">Benefits</a>
           </nav>
           <div className="sp-navbar-auth">
-            <Link to="/app/login" className="sp-navbar-link">
+            <Link to="/beta/login" className="sp-navbar-link">
               Sign In
             </Link>
-            <Link to="/app/register" className="sp-navbar-btn">
+            <Link to="/beta/register" className="sp-navbar-btn">
               Get Started Free
             </Link>
           </div>
