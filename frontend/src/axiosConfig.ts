@@ -1,6 +1,16 @@
 import axios from "axios";
 
-const api = axios.create();
+// Determine the base URL based on environment
+const getBaseURL = () => {
+  if (import.meta.env.PROD) {
+    return "https://sellerprep-backend.onrender.com/api";
+  }
+  return "/api"; // Development - handled by Vite proxy
+};
+
+const api = axios.create({
+  baseURL: getBaseURL(),
+});
 
 // Add token to requests
 api.interceptors.request.use(

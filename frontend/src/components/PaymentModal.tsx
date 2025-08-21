@@ -62,19 +62,17 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
         throw new Error('Stripe failed to load');
       }
 
-      // Confirm payment
-      const { error: stripeError } = await stripe.confirmCardPayment(data.client_secret, {
-        payment_method: {
-          card: {
-            // This would normally be a Stripe Elements card component
-            // For now, we'll use a basic implementation
-          },
-        },
-      });
+      // TODO: Implement proper Stripe Elements integration
+      // For now, skip Stripe confirmation and go directly to backend confirmation
+      // const { error: stripeError } = await stripe.confirmCardPayment(data.client_secret, {
+      //   payment_method: {
+      //     card: cardElement, // This should be a Stripe Elements card component
+      //   },
+      // });
 
-      if (stripeError) {
-        throw new Error(stripeError.message);
-      }
+      // if (stripeError) {
+      //   throw new Error(stripeError.message);
+      // }
 
       // Confirm payment on backend
       const confirmResponse = await fetch('/api/payments/confirm/', {
