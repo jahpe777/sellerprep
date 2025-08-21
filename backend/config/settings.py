@@ -118,6 +118,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 CORS_ALLOWED_ORIGINS = [
     "https://sellerprep.app",
     "https://www.sellerprep.app",
+    "https://sellerprep.vercel.app",
 ]
 
 # For development, allow all origins when DEBUG is True
