@@ -64,7 +64,7 @@ import os
 # Use DATABASE_URL if available (production), otherwise fall back to individual variables (development)
 DATABASE_URL = os.environ.get('DATABASE_URL')
 
-if DATABASE_URL:
+if DATABASE_URL and DATABASE_URL.strip():
     DATABASES = {
         "default": dj_database_url.parse(DATABASE_URL)
     }
@@ -73,9 +73,9 @@ else:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
-            "NAME": config("DB_NAME"),
-            "USER": config("DB_USER"),
-            "PASSWORD": config("DB_PASSWORD"),
+            "NAME": config("DB_NAME", default="sellerprep"),
+            "USER": config("DB_USER", default="user"),
+            "PASSWORD": config("DB_PASSWORD", default="pass"),
             "HOST": config("DB_HOST", default="localhost"),
             "PORT": config("DB_PORT", default="5432"),
         }
