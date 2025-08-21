@@ -2324,16 +2324,15 @@ body {
   padding-top: 30px;
 }
 
-.sp-preview-link {
-  color: var(--sp-primary);
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 1.1rem;
-  transition: color 0.2s;
+.sp-footer-note {
+  color: #718096;
+  font-style: italic;
+  margin: 0;
 }
 
-.sp-preview-link:hover {
-  color: #2d8f47;
+.sp-navbar-text {
+  color: #718096;
+  font-weight: 500;
 }
 
 @media (max-width: 768px) {

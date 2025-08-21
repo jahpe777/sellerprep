@@ -58,15 +58,13 @@ const Navbar: React.FC = () => {
           </button>
         </>
       ) : isComingSoon ? (
-        // Coming soon page - minimal nav
+        // Coming soon page - minimal nav (no beta access)
         <>
           <nav className="sp-navbar-title">
-            <a href="/beta">Beta Access</a>
+            <span></span>
           </nav>
           <div className="sp-navbar-auth">
-            <a href="/beta" className="sp-navbar-btn">
-              Try Beta
-            </a>
+            <span className="sp-navbar-text">Coming Soon</span>
           </div>
         </>
       ) : (

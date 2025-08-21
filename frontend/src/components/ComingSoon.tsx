@@ -62,9 +62,9 @@ const ComingSoon: React.FC = () => {
           </div>
           
           <div className="sp-coming-soon-footer">
-            <a href="/beta" className="sp-preview-link">
-              Preview the Application →
-            </a>
+            <p className="sp-footer-note">
+              Beta testing coming soon for select participants
+            </p>
           </div>
         </div>
       </div>
