@@ -1,6 +1,6 @@
 from rest_framework import serializers
 import os
-from .models import Property, Section, Document, PropertyImage, Note
+from .models import Property, Section, Document, PropertyImage, Note, WaitlistSignup
 
 class SectionSerializer(serializers.ModelSerializer):
     class Meta:
@@ -61,3 +61,10 @@ class PropertySerializer(serializers.ModelSerializer):
             "sections", "documents", "images", "notes",
         ]
         read_only_fields = ["id", "owner", "created_at"]
+
+
+class WaitlistSignupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WaitlistSignup
+        fields = ["id", "email", "created_at"]
+        read_only_fields = ["id", "created_at"]

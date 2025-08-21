@@ -5,6 +5,7 @@ from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from .views import (
     register,
+    waitlist_signup,
     PropertyViewSet,
     SectionViewSet,
     DocumentViewSet,
@@ -31,6 +32,7 @@ urlpatterns = [
     path("token/",         TokenObtainPairView.as_view(),  name="token_obtain_pair"),
     path("token/refresh/", TokenRefreshView.as_view(),     name="token_refresh"),
     path("register/",      register,                       name="register"),
+    path("waitlist/",      waitlist_signup,                name="waitlist_signup"),
     path("payments/create-intent/", create_payment_intent, name="create_payment_intent"),
     path("payments/confirm/", confirm_payment, name="confirm_payment"),
     path("payments/check-permission/", check_export_permission, name="check_export_permission"),

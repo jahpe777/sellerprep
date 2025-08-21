@@ -2201,7 +2201,7 @@ body {
 /* Coming Soon Styles */
 .sp-coming-soon {
   min-height: calc(100vh - 56px); /* Account for navbar */
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--sp-primary) 0%, #2d8f47 100%);
   display: flex;
   align-items: center;
   justify-content: center;

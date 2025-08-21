@@ -2,7 +2,7 @@
 
 import os
 from rest_framework import viewsets, permissions, parsers, status
-from rest_framework.decorators import api_view, action
+from rest_framework.decorators import api_view, action, permission_classes
 from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import AllowAny
@@ -281,3 +281,30 @@ class NoteViewSet(viewsets.ModelViewSet):
                 "Cannot add a note to another user's property."
             )
         serializer.save(property_id=prop_id, section_id=section_id)
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])  # Allow unauthenticated access
+def waitlist_signup(request):
+    """Add email to waitlist"""
+    from .serializers import WaitlistSignupSerializer
+    from .models import WaitlistSignup
+    
+    serializer = WaitlistSignupSerializer(data=request.data)
+    if serializer.is_valid():
+        try:
+            serializer.save()
+            return Response({
+                'message': 'Successfully added to waitlist!',
+                'email': serializer.validated_data['email']
+            }, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            if 'unique constraint' in str(e).lower():
+                return Response({
+                    'message': 'Email already registered for early access.'
+                }, status=status.HTTP_200_OK)
+            return Response({
+                'error': 'Failed to add to waitlist.'
+            }, status=status.HTTP_400_BAD_REQUEST)
+    
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
