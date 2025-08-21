@@ -77,7 +77,7 @@ const AuthPage: React.FC = () => {
         setMessage("Login successful!");
         setMessageType("success");
         // Redirect to dashboard after a short delay for feedback
-        setTimeout(() => navigate("/dashboard"), 600);
+        setTimeout(() => navigate("/app/dashboard"), 600);
       } else {
         await api.post(`${API_BASE}/register/`, { email, password });
         setMessage("Registration successful! You can now log in.");

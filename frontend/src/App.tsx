@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import AuthPage from "./components/AuthPage";
 import Dashboard from "./components/Dashboard";
 import LandingPage from "./components/LandingPage";
+import ComingSoon from "./components/ComingSoon";
 import AdminPanel from "./components/AdminPanel";
 import PrivateRoute from "./PrivateRoute";
 import Layout from "./components/Layout";
@@ -24,14 +25,17 @@ export default function App() {
       <Router>
         <Navbar />
         <Routes>
-          {/* Public Routes */}
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/login" element={<AuthPage />} />
-          <Route path="/register" element={<AuthPage />} />
+          {/* Preview Site - Coming Soon */}
+          <Route path="/" element={<ComingSoon />} />
+          
+          {/* Full Application Routes */}
+          <Route path="/app" element={<LandingPage />} />
+          <Route path="/app/login" element={<AuthPage />} />
+          <Route path="/app/register" element={<AuthPage />} />
           
           {/* Protected Routes */}
           <Route
-            path="/dashboard/*"
+            path="/app/dashboard/*"
             element={
               <PrivateRoute>
                 <main className="sp-main-content">
@@ -43,10 +47,26 @@ export default function App() {
             }
           />
           <Route
-            path="/admin"
+            path="/app/admin"
             element={
               <PrivateRoute>
                 <AdminPanel />
+              </PrivateRoute>
+            }
+          />
+          
+          {/* Legacy Routes - Redirect to /app */}
+          <Route path="/login" element={<AuthPage />} />
+          <Route path="/register" element={<AuthPage />} />
+          <Route
+            path="/dashboard/*"
+            element={
+              <PrivateRoute>
+                <main className="sp-main-content">
+                  <div className="sp-content-card">
+                    <Dashboard />
+                  </div>
+                </main>
               </PrivateRoute>
             }
           />

@@ -2197,3 +2197,155 @@ body {
   color: #4a5568;
   font-size: 1.1rem;
 }
+
+/* Coming Soon Styles */
+.sp-coming-soon {
+  min-height: calc(100vh - 56px); /* Account for navbar */
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.sp-coming-soon-container {
+  max-width: 600px;
+  width: 100%;
+}
+
+.sp-coming-soon-content {
+  background: white;
+  border-radius: 16px;
+  padding: 60px 40px;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.sp-coming-soon-title {
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--sp-primary);
+  margin-bottom: 12px;
+}
+
+.sp-coming-soon-subtitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 20px;
+}
+
+.sp-coming-soon-description {
+  font-size: 1.1rem;
+  color: #4a5568;
+  line-height: 1.6;
+  margin-bottom: 40px;
+}
+
+.sp-coming-soon-form {
+  margin-bottom: 40px;
+}
+
+.sp-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sp-coming-soon-input {
+  padding: 16px 20px;
+  font-size: 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  transition: border-color 0.2s;
+}
+
+.sp-coming-soon-input:focus {
+  outline: none;
+  border-color: var(--sp-primary);
+}
+
+.sp-coming-soon-btn {
+  padding: 16px 32px;
+  background: var(--sp-primary);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.sp-coming-soon-btn:hover {
+  background: #2d8f47;
+  transform: translateY(-2px);
+}
+
+.sp-success-message {
+  background: #f0fff4;
+  border: 2px solid #68d391;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 40px;
+}
+
+.sp-success-message p {
+  color: #2f855a;
+  font-weight: 600;
+  margin: 0;
+}
+
+.sp-coming-soon-features {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 40px;
+}
+
+.sp-feature-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 12px;
+  background: #f8fafc;
+  border-radius: 8px;
+  font-weight: 500;
+  color: #4a5568;
+}
+
+.sp-feature-icon {
+  font-size: 1.2rem;
+}
+
+.sp-coming-soon-footer {
+  border-top: 1px solid #e2e8f0;
+  padding-top: 30px;
+}
+
+.sp-preview-link {
+  color: var(--sp-primary);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.1rem;
+  transition: color 0.2s;
+}
+
+.sp-preview-link:hover {
+  color: #2d8f47;
+}
+
+@media (max-width: 768px) {
+  .sp-coming-soon-content {
+    padding: 40px 24px;
+  }
+  
+  .sp-coming-soon-title {
+    font-size: 2.5rem;
+  }
+  
+  .sp-coming-soon-subtitle {
+    font-size: 1.3rem;
+  }
+}
