@@ -27,6 +27,7 @@ body {
   font-family: var(--sp-font);
   margin: 0;
   width: 100vw;
+  overflow-x: hidden;
 }
 
 /* Navbar */
@@ -2201,11 +2202,13 @@ body {
 /* Coming Soon Styles */
 .sp-coming-soon {
   min-height: calc(100vh - 56px); /* Account for navbar */
+  width: 100vw;
   background: linear-gradient(135deg, var(--sp-primary) 0%, #2d8f47 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 40px 20px;
+  box-sizing: border-box;
 }
 
 .sp-coming-soon-container {
@@ -2222,7 +2225,7 @@ body {
 }
 
 .sp-coming-soon-title {
-  font-size: 3rem;
+  font-size: 4rem;
   font-weight: 700;
   color: var(--sp-primary);
   margin-bottom: 12px;
@@ -2336,12 +2339,27 @@ body {
 }
 
 @media (max-width: 768px) {
+  .sp-coming-soon {
+    padding: 20px 10px;
+    width: 100vw;
+    margin: 0;
+    overflow-x: hidden;
+  }
+  
+  .sp-coming-soon-container {
+    width: 100%;
+    max-width: 100%;
+  }
+  
   .sp-coming-soon-content {
-    padding: 40px 24px;
+    padding: 40px 20px;
+    margin: 0;
+    width: 100%;
+    box-sizing: border-box;
   }
   
   .sp-coming-soon-title {
-    font-size: 2.5rem;
+    font-size: 3rem;
   }
   
   .sp-coming-soon-subtitle {
