@@ -117,7 +117,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # CORS settings for production
 CORS_ALLOWED_ORIGINS = [
     "https://sellerprep.app",
-    "https://www.sellerprep.app",
+    "https://www.sellerprep.app", 
     "https://sellerprep.vercel.app",
 ]
 
