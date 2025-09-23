@@ -429,8 +429,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.4);
-  pointer-events: none;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
 }
 .sp-overlay-message {
   background: var(--sp-primary);
@@ -1774,6 +1774,11 @@ body {
   width: 90%;
   max-height: 80vh;
   overflow-y: auto;
+  background: white;
+  border-radius: 12px;
+  padding: 32px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  pointer-events: auto;
 }
 
 .sp-payment-modal-header {
@@ -1938,6 +1943,40 @@ body {
   margin-bottom: 6px;
   font-size: 0.9rem;
   line-height: 1.4;
+}
+
+.sp-card-element-container {
+  margin-bottom: 24px;
+}
+
+.sp-card-element-container label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #2d3748;
+  font-size: 0.95rem;
+}
+
+.sp-card-element-container .StripeElement {
+  padding: 16px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  background: white;
+  min-height: 45px;
+  transition: border-color 0.3s ease;
+}
+
+.sp-card-element-container .StripeElement--focus {
+  border-color: var(--sp-primary);
+  box-shadow: 0 0 0 3px rgba(49, 163, 84, 0.1);
+}
+
+.sp-card-element-container .StripeElement--invalid {
+  border-color: #e53e3e;
+}
+
+.sp-card-element-container .StripeElement--complete {
+  border-color: #48bb78;
 }
 
 .sp-payment-error {

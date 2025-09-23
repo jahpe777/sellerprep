@@ -146,3 +146,16 @@ AUTHENTICATION_BACKENDS = [
     'core.authentication.EmailBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
+
+# Email configuration - SendGrid
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'apikey'  # SendGrid requires 'apikey' as username
+EMAIL_HOST_PASSWORD = config('SENDGRID_API_KEY', default='')
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='no-reply@sellerprep.app')
+SERVER_EMAIL = DEFAULT_FROM_EMAIL
+
+# Stripe configuration
+STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY', default='')

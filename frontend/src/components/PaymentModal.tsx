@@ -1,9 +1,9 @@
 // src/components/PaymentModal.tsx
 import React, { useState } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
+import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 
-// Initialize Stripe (you'll need to add your publishable key)
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || 'pk_test_...');
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 interface PaymentModalProps {
   isOpen: boolean;
@@ -13,13 +13,14 @@ interface PaymentModalProps {
   onPaymentSuccess: () => void;
 }
 
-const PaymentModal: React.FC<PaymentModalProps> = ({
-  isOpen,
+const PaymentForm: React.FC<Omit<PaymentModalProps, 'isOpen'>> = ({
   onClose,
   propertyId,
   propertyAddress,
   onPaymentSuccess,
 }) => {
+  const stripe = useStripe();
+  const elements = useElements();
   const [amount, setAmount] = useState('5');
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState('');
@@ -56,23 +57,26 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
         throw new Error(data.error || 'Payment failed');
       }
 
-      // Initialize Stripe
-      const stripe = await stripePromise;
-      if (!stripe) {
+      // Validate Stripe is loaded
+      if (!stripe || !elements) {
         throw new Error('Stripe failed to load');
       }
 
-      // TODO: Implement proper Stripe Elements integration
-      // For now, skip Stripe confirmation and go directly to backend confirmation
-      // const { error: stripeError } = await stripe.confirmCardPayment(data.client_secret, {
-      //   payment_method: {
-      //     card: cardElement, // This should be a Stripe Elements card component
-      //   },
-      // });
+      const cardElement = elements.getElement(CardElement);
+      if (!cardElement) {
+        throw new Error('Card element not found');
+      }
 
-      // if (stripeError) {
-      //   throw new Error(stripeError.message);
-      // }
+      // Confirm payment with Stripe
+      const { error: stripeError } = await stripe.confirmCardPayment(data.client_secret, {
+        payment_method: {
+          card: cardElement,
+        },
+      });
+
+      if (stripeError) {
+        throw new Error(stripeError.message);
+      }
 
       // Confirm payment on backend
       const confirmResponse = await fetch('/api/payments/confirm/', {
@@ -101,10 +105,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
     }
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div className="sp-overlay">
       <div className="sp-overlay-content sp-payment-modal">
         <div className="sp-payment-modal-header">
           <h2>Support SellerPrep</h2>
@@ -149,6 +150,27 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
             </div>
           </div>
           
+          <div className="sp-card-element-container">
+            <label htmlFor="card-element">Card Details</label>
+            <CardElement
+              id="card-element"
+              options={{
+                style: {
+                  base: {
+                    fontSize: '16px',
+                    color: '#424770',
+                    '::placeholder': {
+                      color: '#aab7c4',
+                    },
+                  },
+                  invalid: {
+                    color: '#9e2146',
+                  },
+                },
+              }}
+            />
+          </div>
+          
           <div className="sp-payment-info">
             <p>Your contribution helps us:</p>
             <ul>
@@ -175,13 +197,24 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
             <button
               className="sp-btn sp-btn-primary"
               onClick={handlePayment}
-              disabled={isProcessing || parseFloat(amount) < 1}
+              disabled={isProcessing || parseFloat(amount) < 1 || !stripe}
             >
               {isProcessing ? 'Processing...' : `Pay $${parseFloat(amount || '0').toFixed(2)}`}
             </button>
           </div>
         </div>
       </div>
+  );
+};
+
+const PaymentModal: React.FC<PaymentModalProps> = (props) => {
+  if (!props.isOpen) return null;
+
+  return (
+    <div className="sp-overlay">
+      <Elements stripe={stripePromise}>
+        <PaymentForm {...props} />
+      </Elements>
     </div>
   );
 };

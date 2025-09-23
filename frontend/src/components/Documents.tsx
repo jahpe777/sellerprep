@@ -27,7 +27,7 @@ const Documents: React.FC<DocumentsProps> = ({ propertyId, sectionId }) => {
 
   async function fetchDocuments() {
     try {
-      const res = await api.get<Doc[]>("/api/documents/", {
+      const res = await api.get<Doc[]>("/documents/", {
         params: { property: propertyId, section: sectionId },
         headers: { Authorization: `Bearer ${localStorage.getItem("access")}` },
       });
@@ -52,7 +52,7 @@ const Documents: React.FC<DocumentsProps> = ({ propertyId, sectionId }) => {
     formData.append("section", String(sectionId));
 
     try {
-      await api.post("/api/documents/", formData, {
+      await api.post("/documents/", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${localStorage.getItem("access")}`,

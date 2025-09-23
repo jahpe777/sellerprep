@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import api from "../axiosConfig";
 import { useNavigate, useLocation } from "react-router-dom";
 
-const API_BASE = "/api";
+const API_BASE = "";
 
 type AuthMode = "login" | "register";
 

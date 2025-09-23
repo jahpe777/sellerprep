@@ -24,7 +24,7 @@ const Images: React.FC<ImagesProps> = ({ propertyId, sectionId }) => {
   useEffect(() => {
     if (!propertyId || !sectionId) return;
     api
-      .get<Img[]>("/api/images/", {
+      .get<Img[]>("/images/", {
         params: { property: propertyId, section: sectionId },
         headers: { Authorization: `Bearer ${localStorage.getItem("access")}` },
       })
@@ -56,7 +56,7 @@ const Images: React.FC<ImagesProps> = ({ propertyId, sectionId }) => {
     form.append("property", String(propertyId));
     form.append("section", String(sectionId));
     try {
-      await api.post("/api/images/", form, {
+      await api.post("/images/", form, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${localStorage.getItem("access")}`,
@@ -65,7 +65,7 @@ const Images: React.FC<ImagesProps> = ({ propertyId, sectionId }) => {
       setFile(null);
       setPreviewUrl(null);
       if (inputRef.current) inputRef.current.value = "";
-      const res = await api.get<Img[]>("/api/images/", {
+      const res = await api.get<Img[]>("/images/", {
         params: { property: propertyId, section: sectionId },
         headers: { Authorization: `Bearer ${localStorage.getItem("access")}` },
       });

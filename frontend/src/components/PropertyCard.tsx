@@ -43,7 +43,7 @@ const PropertyCard: React.FC<Props> = ({
 
   const handleExport = async () => {
     try {
-      const res = await api.get(`/api/properties/${property.id}/export/`, {
+      const res = await api.get(`/properties/${property.id}/export/`, {
         responseType: "blob",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access")}`,

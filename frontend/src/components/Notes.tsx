@@ -24,7 +24,7 @@ const Notes: React.FC<NotesProps> = ({ propertyId, sectionId }) => {
   useEffect(() => {
     if (!propertyId || !sectionId) return;
     api
-      .get<Note[]>("/api/notes/", {
+      .get<Note[]>("/notes/", {
         params: { property: propertyId, section: sectionId },
         headers: { Authorization: `Bearer ${localStorage.getItem("access")}` },
       })
@@ -40,7 +40,7 @@ const Notes: React.FC<NotesProps> = ({ propertyId, sectionId }) => {
     setError("");
     try {
       await api.post(
-        "/api/notes/",
+        "/notes/",
         { property: propertyId, section: sectionId, content: text },
         {
           headers: {
@@ -51,7 +51,7 @@ const Notes: React.FC<NotesProps> = ({ propertyId, sectionId }) => {
       setContent("");
       if (textareaRef.current) textareaRef.current.value = "";
       // Refresh list
-      const res = await api.get<Note[]>("/api/notes/", {
+      const res = await api.get<Note[]>("/notes/", {
         params: { property: propertyId, section: sectionId },
         headers: { Authorization: `Bearer ${localStorage.getItem("access")}` },
       });

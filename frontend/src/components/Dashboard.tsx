@@ -5,7 +5,7 @@ import type { Property, Section } from "../types";
 import AddPropertyForm from "./AddPropertyForm";
 import PropertyList from "./PropertyList";
 
-const API_URL = "/api/properties/";
+const API_URL = "/properties/";
 
 const Dashboard: React.FC = () => {
   const [properties, setProperties] = useState<Property[]>([]);
@@ -41,7 +41,7 @@ const Dashboard: React.FC = () => {
 
   async function fetchSections(propertyId: number) {
     try {
-      const res = await api.get<Section[]>("/api/sections/", {
+      const res = await api.get<Section[]>("/sections/", {
         params: { property: propertyId },
         headers: { Authorization: `Bearer ${localStorage.getItem("access")}` },
       });
@@ -122,7 +122,7 @@ const Dashboard: React.FC = () => {
   async function handleAddSection(propertyId: number, name: string) {
     try {
       await api.post(
-        "/api/sections/",
+        "/sections/",
         { property: propertyId, title: name },
         {
           headers: {
