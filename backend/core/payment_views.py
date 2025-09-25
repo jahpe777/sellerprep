@@ -167,21 +167,38 @@ def confirm_payment(request):
         user_profile, created = UserProfile.objects.get_or_create(user=request.user)
         user_profile.properties_exported += 1
         user_profile.save()
-        
+
+        from .email_utils import send_payment_success
+        try:
+            send_payment_success(
+                request.user,
+                property_obj.address,
+                Decimal(payment_intent.amount) / 100
+            )
+        except Exception as e:
+            pass
+
         return Response({
             'success': True,
             'payment_id': payment.id,
             'message': 'Payment confirmed. You can now export this property.'
         })
-        
+
     except stripe.error.StripeError as e:
+        from .email_utils import send_payment_failure
+        try:
+            property_obj = Property.objects.get(id=property_id, owner=request.user)
+            send_payment_failure(request.user, property_obj.address, str(e))
+        except:
+            pass
+
         return Response(
-            {'error': f'Stripe error: {str(e)}'}, 
+            {'error': f'Stripe error: {str(e)}'},
             status=status.HTTP_400_BAD_REQUEST
         )
     except Exception as e:
         return Response(
-            {'error': f'Server error: {str(e)}'}, 
+            {'error': f'Server error: {str(e)}'},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
 

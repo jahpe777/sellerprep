@@ -47,6 +47,13 @@ def register(request):
     user = User.objects.create_user(username=username,
                                     email=email,
                                     password=password)
+
+    from .email_utils import send_welcome_email
+    try:
+        send_welcome_email(user)
+    except Exception as e:
+        pass
+
     return Response({"message": "User created successfully",
                      "email": user.email},
                     status=status.HTTP_201_CREATED)
@@ -138,7 +145,13 @@ class PropertyViewSet(viewsets.ModelViewSet):
         if can_export_free and user_profile.properties_exported == 0:
             user_profile.properties_exported += 1
             user_profile.save()
-        
+
+        from .email_utils import send_export_confirmation
+        try:
+            send_export_confirmation(request.user, prop.address)
+        except Exception as e:
+            pass
+
         response = HttpResponse(pdf, content_type="application/pdf")
         response["Content-Disposition"] = (
             f'attachment; filename="property_{prop.id}.pdf"'
@@ -295,6 +308,13 @@ def waitlist_signup(request):
         if serializer.is_valid():
             try:
                 serializer.save()
+
+                from .email_utils import send_waitlist_confirmation
+                try:
+                    send_waitlist_confirmation(serializer.validated_data['email'])
+                except Exception as e:
+                    pass
+
                 return Response({
                     'message': 'Successfully added to waitlist!',
                     'email': serializer.validated_data['email']

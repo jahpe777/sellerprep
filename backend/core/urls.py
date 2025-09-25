@@ -20,6 +20,7 @@ from .payment_views import (
     list_users,
     check_admin_status,
 )
+from .webhook_views import stripe_webhook
 
 router = DefaultRouter()
 router.register(r"properties", PropertyViewSet, basename="property")
@@ -39,5 +40,6 @@ urlpatterns = [
     path("admin/make-admin/", make_user_admin, name="make_user_admin"),
     path("admin/users/", list_users, name="list_users"),
     path("admin/check-status/", check_admin_status, name="check_admin_status"),
+    path("webhooks/stripe/", stripe_webhook, name="stripe_webhook"),
     path("",               include(router.urls)),
 ]
