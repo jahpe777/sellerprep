@@ -286,15 +286,23 @@
         position: relative;
       }
 
-      .content-text::after {
-        content: "";
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 20px;
-        background: linear-gradient(transparent, var(--sp-bg));
-        pointer-events: none;
+      .document-link {
+        color: var(--sp-primary);
+        text-decoration: none;
+        font-weight: 600;
+        padding: 8px 12px;
+        background: white;
+        border: 2px solid var(--sp-primary);
+        border-radius: 6px;
+        display: inline-block;
+        margin: 5px 0;
+        transition: all 0.2s ease;
+      }
+
+      .document-link:hover {
+        background: var(--sp-primary);
+        color: white;
+        text-decoration: none;
       }
 
       /* Image Gallery */
@@ -496,25 +504,19 @@
               <div class="document-name">{{ doc.filename }}</div>
               <div class="document-meta">
                 Uploaded: {{ doc.uploaded }}
-                {% if doc.preview.file_info.size %}
-                  <br><small>Size: {{ doc.preview.file_info.size }}</small>
-                {% endif %}
-                {% if doc.preview.file_info.mime_type and doc.preview.file_info.mime_type != "unknown" %}
-                  <br><small>Type: {{ doc.preview.file_info.mime_type }}</small>
+                {% if doc.preview.file_size %}
+                  <br><small>Size: {{ doc.preview.file_size }}</small>
                 {% endif %}
               </div>
-              {% if doc.preview.description %}
               <div class="document-content">
-                <div class="content-header">Document Information:</div>
-                <div class="content-text">{{ doc.preview.description }}</div>
+                <div class="content-header">View Document:</div>
+                <div class="content-text">
+                  <a href="{{ doc.preview.preview_url }}" class="document-link" target="_blank">
+                    Click here to open and preview this document in your browser
+                  </a>
+                  <br><small>Opens the document in a new tab for viewing, downloading, or printing</small>
+                </div>
               </div>
-              {% endif %}
-              {% if doc.preview.preview_text and doc.preview.extractable %}
-              <div class="document-content">
-                <div class="content-header">Content Preview:</div>
-                <div class="content-text">{{ doc.preview.preview_text|linebreaks }}</div>
-              </div>
-              {% endif %}
             </li>
             {% endfor %}
           </ul>

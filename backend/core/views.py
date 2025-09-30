@@ -109,7 +109,7 @@ class PropertyViewSet(viewsets.ModelViewSet):
             for d in all_docs:
                 if d.section_id == sec.id:
                     from .document_utils import get_document_preview_summary
-                    doc_preview = get_document_preview_summary(d)
+                    doc_preview = get_document_preview_summary(d, request)
                     docs.append({
                         "filename": os.path.basename(d.file.name),
                         "uploaded": d.uploaded_at.strftime("%Y-%m-%d"),
