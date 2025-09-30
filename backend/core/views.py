@@ -96,6 +96,12 @@ class PropertyViewSet(viewsets.ModelViewSet):
         all_images   = list(prop.images.order_by("uploaded_at"))
         all_notes    = list(prop.notes.order_by("created_at"))
 
+        # Calculate summary statistics
+        total_documents = len(all_docs)
+        total_images = len(all_images)
+        total_notes = len(all_notes)
+        total_sections = len(all_sections)
+
         # Build per‑section buckets
         sections_data = []
         for sec in all_sections:
@@ -134,8 +140,13 @@ class PropertyViewSet(viewsets.ModelViewSet):
 
         # Render HTML and convert to PDF
         html_string = render_to_string("export/property_export.html", {
-            "property":      prop,
-            "sections_data": sections_data,
+            "property":        prop,
+            "sections_data":   sections_data,
+            "total_documents": total_documents,
+            "total_images":    total_images,
+            "total_notes":     total_notes,
+            "total_sections":  total_sections,
+            "export_user":     request.user,
         })
         html = HTML(string=html_string,
                     base_url=request.build_absolute_uri("/"))
