@@ -108,10 +108,13 @@ class PropertyViewSet(viewsets.ModelViewSet):
             docs = []
             for d in all_docs:
                 if d.section_id == sec.id:
+                    from .document_utils import get_document_preview_summary
+                    doc_preview = get_document_preview_summary(d)
                     docs.append({
                         "filename": os.path.basename(d.file.name),
                         "uploaded": d.uploaded_at.strftime("%Y-%m-%d"),
                         "url":      request.build_absolute_uri(d.file.url),
+                        "preview":  doc_preview,
                     })
 
             imgs = []
