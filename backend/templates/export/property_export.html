@@ -496,15 +496,22 @@
               <div class="document-name">{{ doc.filename }}</div>
               <div class="document-meta">
                 Uploaded: {{ doc.uploaded }}
-                {% if doc.preview.extractable %}
-                  <br><small>Content extractable</small>
-                {% else %}
-                  <br><small>Preview not available</small>
+                {% if doc.preview.file_info.size %}
+                  <br><small>Size: {{ doc.preview.file_info.size }}</small>
+                {% endif %}
+                {% if doc.preview.file_info.mime_type and doc.preview.file_info.mime_type != "unknown" %}
+                  <br><small>Type: {{ doc.preview.file_info.mime_type }}</small>
                 {% endif %}
               </div>
-              {% if doc.preview.preview_text %}
+              {% if doc.preview.description %}
               <div class="document-content">
-                <div class="content-header">Document Content:</div>
+                <div class="content-header">Document Information:</div>
+                <div class="content-text">{{ doc.preview.description }}</div>
+              </div>
+              {% endif %}
+              {% if doc.preview.preview_text and doc.preview.extractable %}
+              <div class="document-content">
+                <div class="content-header">Content Preview:</div>
                 <div class="content-text">{{ doc.preview.preview_text|linebreaks }}</div>
               </div>
               {% endif %}
