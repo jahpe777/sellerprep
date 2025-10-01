@@ -142,6 +142,7 @@ class PropertyViewSet(viewsets.ModelViewSet):
             })
 
         # Render HTML and convert to PDF
+        from datetime import datetime
         html_string = render_to_string("export/property_export.html", {
             "property":        prop,
             "sections_data":   sections_data,
@@ -150,6 +151,7 @@ class PropertyViewSet(viewsets.ModelViewSet):
             "total_notes":     total_notes,
             "total_sections":  total_sections,
             "export_user":     request.user,
+            "export_date":     datetime.now(),
         })
 
         # Import weasyprint here to avoid startup issues

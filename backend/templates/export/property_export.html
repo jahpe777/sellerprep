@@ -240,6 +240,20 @@
         font-size: 11pt;
       }
 
+      .document-filename-link {
+        color: var(--sp-primary);
+        text-decoration: none;
+        font-weight: 600;
+        border-bottom: 1px solid transparent;
+        transition: all 0.2s ease;
+      }
+
+      .document-filename-link:hover {
+        color: var(--sp-secondary);
+        border-bottom: 1px solid var(--sp-primary);
+        text-decoration: none;
+      }
+
       .document-meta {
         font-size: 9pt;
         color: var(--text-muted);
@@ -286,24 +300,6 @@
         position: relative;
       }
 
-      .document-link {
-        color: var(--sp-primary);
-        text-decoration: none;
-        font-weight: 600;
-        padding: 8px 12px;
-        background: white;
-        border: 2px solid var(--sp-primary);
-        border-radius: 6px;
-        display: inline-block;
-        margin: 5px 0;
-        transition: all 0.2s ease;
-      }
-
-      .document-link:hover {
-        background: var(--sp-primary);
-        color: white;
-        text-decoration: none;
-      }
 
       /* Image Gallery */
       .image-gallery {
@@ -432,7 +428,7 @@
     <div class="report-info">
       <div>
         <div class="label">Generated On</div>
-        <div class="value">{{ "now"|date:"F j, Y" }}</div>
+        <div class="value">{{ export_date|date:"F j, Y" }}</div>
       </div>
       <div>
         <div class="label">Documents</div>
@@ -455,7 +451,7 @@
     <!-- Executive Summary -->
     <div class="executive-summary">
       <h2>Executive Summary</h2>
-      <p>This comprehensive property report contains detailed documentation for <strong>{{ property.address }}</strong>, generated on {{ "now"|date:"F j, Y" }}. The documentation includes:</p>
+      <p>This comprehensive property report contains detailed documentation for <strong>{{ property.address }}</strong>, generated on {{ export_date|date:"F j, Y" }}. The documentation includes:</p>
 
       <ul style="margin: 15px 0; padding-left: 20px;">
         <li><strong>{{ total_sections }}</strong> property section{{ total_sections|pluralize }} covering different areas of the home</li>
@@ -501,21 +497,17 @@
               {% else %}
                 <div class="document-type">FILE</div>
               {% endif %}
-              <div class="document-name">{{ doc.filename }}</div>
+              <div class="document-name">
+                <a href="{{ doc.preview.preview_url }}" class="document-filename-link" target="_blank">
+                  {{ doc.filename }}
+                </a>
+              </div>
               <div class="document-meta">
                 Uploaded: {{ doc.uploaded }}
                 {% if doc.preview.file_size %}
                   <br><small>Size: {{ doc.preview.file_size }}</small>
                 {% endif %}
-              </div>
-              <div class="document-content">
-                <div class="content-header">View Document:</div>
-                <div class="content-text">
-                  <a href="{{ doc.preview.preview_url }}" class="document-link" target="_blank">
-                    Click here to open and preview this document in your browser
-                  </a>
-                  <br><small>Opens the document in a new tab for viewing, downloading, or printing</small>
-                </div>
+                <br><small>Click filename to open and preview document</small>
               </div>
             </li>
             {% endfor %}
@@ -574,7 +566,7 @@
     <!-- Footer -->
     <div class="footer">
       <div class="logo-small">SellerPrep</div>
-      <div>Professional Property Documentation | Generated {{ "now"|date:"F j, Y \a\\t g:i A" }}</div>
+      <div>Professional Property Documentation | Generated {{ export_date|date:"F j, Y \a\\t g:i A" }}</div>
       <div>For questions about this report, contact support@sellerprep.app</div>
     </div>
   </body>
