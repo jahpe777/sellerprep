@@ -18,7 +18,7 @@ const Navbar: React.FC = () => {
       if (isAuthenticated) {
         try {
           // Use lightweight admin check endpoint
-          const response = await api.get('/api/admin/check-status/');
+          const response = await api.get('/admin/check-status/');
           setUserIsAdmin(response.data.is_admin);
         } catch (error) {
           // Silently fail - user just isn't admin or not authenticated yet

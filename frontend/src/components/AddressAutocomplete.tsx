@@ -17,6 +17,7 @@ interface Props {
 
 const AddressAutocomplete: React.FC<Props> = ({ onSelect, value, onChange, placeholder = "Enter address" }) => {
   const autocompleteRef = useRef<any>(null);
+  const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '';
 
   const handlePlaceChanged = () => {
     const place = autocompleteRef.current.getPlace();
@@ -37,7 +38,7 @@ const AddressAutocomplete: React.FC<Props> = ({ onSelect, value, onChange, place
   return (
     <div style={{ position: "relative", zIndex: 1 }}>
       <LoadScript
-        googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
+        googleMapsApiKey={apiKey}
         libraries={libraries}
         loadingElement={<div style={{ padding: "10px" }}>Loading address search...</div>}
         preventGoogleFontsLoading={true}

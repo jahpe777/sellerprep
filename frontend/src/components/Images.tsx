@@ -71,7 +71,13 @@ const Images: React.FC<ImagesProps> = ({ propertyId, sectionId }) => {
       });
       setImages(res.data);
     } catch (err: any) {
-      setError(err.response?.data?.detail || "Upload failed.");
+      console.error("Image upload error:", err.response?.data);
+      const errorMsg = err.response?.data?.detail
+        || err.response?.data?.image?.[0]
+        || err.response?.data?.error
+        || JSON.stringify(err.response?.data)
+        || "Upload failed.";
+      setError(errorMsg);
     }
     setUploading(false);
   }
