@@ -1,0 +1,255 @@
+[
+{
+  "model": "core.property",
+  "pk": 5,
+  "fields": {
+    "owner": [
+      "JamesHiggs"
+    ],
+    "address": "1821 N Herrin Ave, Manhattan Beach, CA 90266, USA",
+    "description": "Test",
+    "created_at": "2025-07-04T00:55:03.203Z"
+  }
+},
+{
+  "model": "core.property",
+  "pk": 6,
+  "fields": {
+    "owner": [
+      "JamesHiggs"
+    ],
+    "address": "712 E Elmwood Ave, Burbank, CA 91501, USA",
+    "description": "Burbank",
+    "created_at": "2025-07-13T22:55:09.483Z"
+  }
+},
+{
+  "model": "core.property",
+  "pk": 7,
+  "fields": {
+    "owner": [
+      "JamesHiggs"
+    ],
+    "address": "1708 Ladera Vista Dr, Fullerton, CA 92831, USA",
+    "description": "Testing this.",
+    "created_at": "2025-07-28T17:50:08.689Z"
+  }
+},
+{
+  "model": "core.property",
+  "pk": 8,
+  "fields": {
+    "owner": [
+      "ghostpavilionmusic"
+    ],
+    "address": "330 Ellery St, Brooklyn, NY 11206, USA",
+    "description": "The Schoolhouse",
+    "created_at": "2025-08-14T00:24:38.123Z"
+  }
+},
+{
+  "model": "core.section",
+  "pk": 1,
+  "fields": {
+    "property": 5,
+    "title": "Kitchen",
+    "created_at": "2025-07-15T23:26:23.236Z"
+  }
+},
+{
+  "model": "core.section",
+  "pk": 2,
+  "fields": {
+    "property": 6,
+    "title": "Garage",
+    "created_at": "2025-07-15T23:26:31.142Z"
+  }
+},
+{
+  "model": "core.section",
+  "pk": 3,
+  "fields": {
+    "property": 6,
+    "title": "Bathroom",
+    "created_at": "2025-07-15T23:26:35.085Z"
+  }
+},
+{
+  "model": "core.section",
+  "pk": 4,
+  "fields": {
+    "property": 7,
+    "title": "Plumbing",
+    "created_at": "2025-07-28T17:54:25.663Z"
+  }
+},
+{
+  "model": "core.section",
+  "pk": 5,
+  "fields": {
+    "property": 8,
+    "title": "Electrical",
+    "created_at": "2025-08-14T00:24:49.736Z"
+  }
+},
+{
+  "model": "core.document",
+  "pk": 4,
+  "fields": {
+    "property": 5,
+    "section": 1,
+    "file": "documents/Sewer_Line_Video_after_Repairs_Made_0YQsqpW.docx",
+    "uploaded_at": "2025-07-15T23:35:14.971Z"
+  }
+},
+{
+  "model": "core.document",
+  "pk": 5,
+  "fields": {
+    "property": 6,
+    "section": 2,
+    "file": "documents/Itemized_Furniture_1_vXTi1On.docx",
+    "uploaded_at": "2025-07-15T23:36:25.808Z"
+  }
+},
+{
+  "model": "core.document",
+  "pk": 6,
+  "fields": {
+    "property": 6,
+    "section": 3,
+    "file": "documents/350550.pdf",
+    "uploaded_at": "2025-07-15T23:37:01.835Z"
+  }
+},
+{
+  "model": "core.document",
+  "pk": 8,
+  "fields": {
+    "property": 5,
+    "section": 1,
+    "file": "documents/712_E_ELMWOOD_AVE_PLAN.pdf",
+    "uploaded_at": "2025-07-17T21:05:43.049Z"
+  }
+},
+{
+  "model": "core.document",
+  "pk": 9,
+  "fields": {
+    "property": 6,
+    "section": 2,
+    "file": "documents/712_E_Elmwood_Ave___Residential_Report.pdf",
+    "uploaded_at": "2025-07-17T21:05:58.213Z"
+  }
+},
+{
+  "model": "core.propertyimage",
+  "pk": 1,
+  "fields": {
+    "property": 5,
+    "section": null,
+    "image": "property_images/24-427821_1_1.jpg",
+    "uploaded_at": "2025-07-17T19:15:03.293Z"
+  }
+},
+{
+  "model": "core.propertyimage",
+  "pk": 2,
+  "fields": {
+    "property": 6,
+    "section": null,
+    "image": "property_images/Screenshot_2025-07-17_at_12.25.35PM.png",
+    "uploaded_at": "2025-07-17T19:30:23.172Z"
+  }
+},
+{
+  "model": "core.propertyimage",
+  "pk": 3,
+  "fields": {
+    "property": 5,
+    "section": null,
+    "image": "property_images/BWP_Home_Improvement.jpg",
+    "uploaded_at": "2025-07-17T19:50:06.288Z"
+  }
+},
+{
+  "model": "core.propertyimage",
+  "pk": 4,
+  "fields": {
+    "property": 5,
+    "section": 1,
+    "image": "property_images/24-427821_32_1.jpg",
+    "uploaded_at": "2025-07-17T21:54:25.436Z"
+  }
+},
+{
+  "model": "core.propertyimage",
+  "pk": 5,
+  "fields": {
+    "property": 6,
+    "section": 2,
+    "image": "property_images/24-427821_17_1.jpg",
+    "uploaded_at": "2025-07-17T21:54:36.103Z"
+  }
+},
+{
+  "model": "core.propertyimage",
+  "pk": 6,
+  "fields": {
+    "property": 6,
+    "section": 3,
+    "image": "property_images/24-427821_3_1.jpg",
+    "uploaded_at": "2025-07-17T21:54:44.443Z"
+  }
+},
+{
+  "model": "core.note",
+  "pk": 1,
+  "fields": {
+    "property": 5,
+    "section": 1,
+    "content": "Test",
+    "created_at": "2025-07-17T21:03:38.926Z"
+  }
+},
+{
+  "model": "core.note",
+  "pk": 2,
+  "fields": {
+    "property": 5,
+    "section": 1,
+    "content": "Working on it",
+    "created_at": "2025-07-17T21:03:48.363Z"
+  }
+},
+{
+  "model": "core.note",
+  "pk": 3,
+  "fields": {
+    "property": 6,
+    "section": 2,
+    "content": "OK",
+    "created_at": "2025-07-17T21:03:56.718Z"
+  }
+},
+{
+  "model": "core.note",
+  "pk": 4,
+  "fields": {
+    "property": 6,
+    "section": 2,
+    "content": "YES",
+    "created_at": "2025-07-17T21:40:04.317Z"
+  }
+},
+{
+  "model": "core.note",
+  "pk": 5,
+  "fields": {
+    "property": 6,
+    "section": 3,
+    "content": "WHat",
+    "created_at": "2025-07-17T21:52:29.850Z"
+  }
+}
+]

@@ -39,7 +39,12 @@ const AddressAutocomplete: React.FC<Props> = ({ onSelect, value, onChange, place
       <LoadScript
         googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
         libraries={libraries}
-        loadingElement={<div style={{ padding: "10px" }}>Loading maps...</div>}
+        loadingElement={<div style={{ padding: "10px" }}>Loading address search...</div>}
+        preventGoogleFontsLoading={true}
+        onError={() => {
+          // Suppress misleading "can't load Google Maps" errors for Places API only usage
+          console.warn("Google Maps API loaded with warnings - this is normal for address autocomplete");
+        }}
       >
         <Autocomplete
           onLoad={(auto) => (autocompleteRef.current = auto)}

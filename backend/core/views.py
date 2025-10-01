@@ -10,7 +10,7 @@ from django.contrib.auth.models import User
 from django.http import FileResponse, HttpResponse
 from django.template.loader import render_to_string
 
-from weasyprint import HTML
+# WeasyPrint import moved to inside export function to avoid startup issues
 
 from .models import Property, Section, Document, PropertyImage, Note, UserProfile, Payment
 from .serializers import (
@@ -20,6 +20,8 @@ from .serializers import (
     PropertyImageSerializer,
     NoteSerializer,
 )
+from .document_utils import get_document_preview_summary
+from .email_utils import send_welcome_email, send_export_confirmation, send_waitlist_confirmation
 
 
 @api_view(["POST"])
@@ -48,7 +50,6 @@ def register(request):
                                     email=email,
                                     password=password)
 
-    from .email_utils import send_welcome_email
     try:
         send_welcome_email(user)
     except Exception as e:
@@ -108,7 +109,6 @@ class PropertyViewSet(viewsets.ModelViewSet):
             docs = []
             for d in all_docs:
                 if d.section_id == sec.id:
-                    from .document_utils import get_document_preview_summary
                     doc_preview = get_document_preview_summary(d, request)
                     docs.append({
                         "filename": os.path.basename(d.file.name),
@@ -151,6 +151,9 @@ class PropertyViewSet(viewsets.ModelViewSet):
             "total_sections":  total_sections,
             "export_user":     request.user,
         })
+
+        # Import weasyprint here to avoid startup issues
+        from weasyprint import HTML
         html = HTML(string=html_string,
                     base_url=request.build_absolute_uri("/"))
         pdf  = html.write_pdf()
@@ -160,7 +163,6 @@ class PropertyViewSet(viewsets.ModelViewSet):
             user_profile.properties_exported += 1
             user_profile.save()
 
-        from .email_utils import send_export_confirmation
         try:
             send_export_confirmation(request.user, prop.address)
         except Exception as e:
@@ -317,13 +319,12 @@ def waitlist_signup(request):
     try:
         from .serializers import WaitlistSignupSerializer
         from .models import WaitlistSignup
-        
+
         serializer = WaitlistSignupSerializer(data=request.data)
         if serializer.is_valid():
             try:
                 serializer.save()
 
-                from .email_utils import send_waitlist_confirmation
                 try:
                     send_waitlist_confirmation(serializer.validated_data['email'])
                 except Exception as e:
