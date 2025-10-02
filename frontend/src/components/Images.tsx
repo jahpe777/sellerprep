@@ -23,12 +23,19 @@ const Images: React.FC<ImagesProps> = ({ propertyId, sectionId }) => {
   // load only this section's images
   useEffect(() => {
     if (!propertyId || !sectionId) return;
+    console.log("Loading images for:", { propertyId, sectionId });
     api
       .get<Img[]>("/images/", {
         params: { property: propertyId, section: sectionId },
       })
-      .then((res) => setImages(res.data))
-      .catch((err) => console.error("Failed to load images", err));
+      .then((res) => {
+        console.log("Loaded images:", res.data);
+        setImages(res.data);
+      })
+      .catch((err) => {
+        console.error("Failed to load images", err);
+        console.error("Error response:", err.response?.data);
+      });
   }, [propertyId, sectionId]);
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -54,21 +61,36 @@ const Images: React.FC<ImagesProps> = ({ propertyId, sectionId }) => {
     form.append("image", file);
     form.append("property", String(propertyId));
     form.append("section", String(sectionId));
+
+    console.log("Uploading image:", {
+      fileName: file.name,
+      fileType: file.type,
+      fileSize: file.size,
+      propertyId,
+      sectionId
+    });
+
     try {
-      await api.post("/images/", form, {
+      const response = await api.post("/images/", form, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
+      console.log("Upload successful:", response.data);
+
       setFile(null);
       setPreviewUrl(null);
       if (inputRef.current) inputRef.current.value = "";
+
       const res = await api.get<Img[]>("/images/", {
         params: { property: propertyId, section: sectionId },
       });
+      console.log("Fetched images:", res.data);
       setImages(res.data);
     } catch (err: any) {
-      console.error("Image upload error:", err.response?.data);
+      console.error("Image upload error:", err);
+      console.error("Error response:", err.response?.data);
+      console.error("Error status:", err.response?.status);
       const errorMsg = err.response?.data?.detail
         || err.response?.data?.image?.[0]
         || err.response?.data?.error
