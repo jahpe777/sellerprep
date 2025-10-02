@@ -91,8 +91,10 @@ const Images: React.FC<ImagesProps> = ({ propertyId, sectionId }) => {
       console.error("Image upload error:", err);
       console.error("Error response:", err.response?.data);
       console.error("Error status:", err.response?.status);
-      const errorMsg = err.response?.data?.detail
-        || err.response?.data?.image?.[0]
+      console.error("Image field error:", err.response?.data?.image);
+
+      const errorMsg = err.response?.data?.image?.[0]
+        || err.response?.data?.detail
         || err.response?.data?.error
         || JSON.stringify(err.response?.data)
         || "Upload failed.";
