@@ -85,7 +85,7 @@ const Images: React.FC<ImagesProps> = ({ propertyId, sectionId }) => {
   async function handleDelete(id: number) {
     if (!window.confirm("Delete this image?")) return;
     try {
-      await api.delete(`/api/images/${id}/`, {
+      await api.delete(`/images/${id}/`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("access")}` },
       });
       setImages((imgs) => imgs.filter((i) => i.id !== id));
