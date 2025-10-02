@@ -111,6 +111,10 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 MEDIA_URL  = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
+# File upload settings - allow up to 10MB files
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10MB in bytes
+FILE_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10MB in bytes
+
 # WhiteNoise configuration for serving media files
 WHITENOISE_AUTOREFRESH = True  # Allows new uploads to be served immediately
 WHITENOISE_USE_FINDERS = True
