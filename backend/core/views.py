@@ -272,15 +272,31 @@ class PropertyImageViewSet(viewsets.ModelViewSet):
         return qs
 
     def perform_create(self, serializer):
+        import logging
+        logger = logging.getLogger(__name__)
+
         prop_id    = self.request.data.get("property")
         section_id = self.request.data.get("section")
+        image_file = self.request.data.get("image")
+
+        logger.info(f"Image upload attempt - Property: {prop_id}, Section: {section_id}")
+        logger.info(f"Image file: {image_file}, Type: {type(image_file)}")
+        if hasattr(image_file, 'name'):
+            logger.info(f"Image filename: {image_file.name}, Size: {image_file.size}")
+
         if not Property.objects.filter(
             id=prop_id, owner=self.request.user
         ).exists():
             raise PermissionDenied(
                 "Cannot upload an image to another user's property."
             )
-        serializer.save(property_id=prop_id, section_id=section_id)
+
+        try:
+            serializer.save(property_id=prop_id, section_id=section_id)
+            logger.info("Image saved successfully")
+        except Exception as e:
+            logger.error(f"Image save failed: {str(e)}")
+            raise
 
 
 class NoteViewSet(viewsets.ModelViewSet):

@@ -35,6 +35,34 @@ class PropertyImageSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ["id", "url", "filename", "uploaded_at"]
 
+    def validate_image(self, value):
+        """Custom image validation with detailed logging"""
+        import logging
+        logger = logging.getLogger(__name__)
+
+        logger.info(f"Validating image: {value}, Type: {type(value)}")
+        logger.info(f"Image name: {value.name if hasattr(value, 'name') else 'N/A'}")
+        logger.info(f"Image size: {value.size if hasattr(value, 'size') else 'N/A'}")
+        logger.info(f"Content type: {value.content_type if hasattr(value, 'content_type') else 'N/A'}")
+
+        try:
+            from PIL import Image
+            import io
+
+            # Try to open and verify the image
+            image = Image.open(value)
+            image.verify()
+            logger.info(f"PIL verification passed. Format: {image.format}, Size: {image.size}")
+
+            # Reset file pointer after verify
+            value.seek(0)
+
+        except Exception as e:
+            logger.error(f"PIL validation failed: {str(e)}")
+            raise serializers.ValidationError(f"Invalid image file: {str(e)}")
+
+        return value
+
     def get_url(self, obj):
         request = self.context.get("request")
         if request:
