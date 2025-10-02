@@ -71,11 +71,8 @@ const Images: React.FC<ImagesProps> = ({ propertyId, sectionId }) => {
     });
 
     try {
-      const response = await api.post("/images/", form, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      // Don't set Content-Type header manually - axios will set it with the correct boundary
+      const response = await api.post("/images/", form);
       console.log("Upload successful:", response.data);
 
       setFile(null);
