@@ -10,6 +10,6 @@ urlpatterns = [
     path("api/", include("core.urls")),
 ]
 
-if settings.DEBUG:
-    # Serve uploaded files during development
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# Serve media files in both development and production
+# In production, this works with WhiteNoise for serving uploaded files
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

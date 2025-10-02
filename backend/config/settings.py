@@ -111,6 +111,11 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 MEDIA_URL  = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
+# WhiteNoise configuration for serving media files
+WHITENOISE_AUTOREFRESH = True  # Allows new uploads to be served immediately
+WHITENOISE_USE_FINDERS = True
+WHITENOISE_ROOT = MEDIA_ROOT
+
 # Default primary key field type
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 

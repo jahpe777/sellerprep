@@ -20,13 +20,12 @@ const Images: React.FC<ImagesProps> = ({ propertyId, sectionId }) => {
   const [error, setError] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // load only this section’s images
+  // load only this section's images
   useEffect(() => {
     if (!propertyId || !sectionId) return;
     api
       .get<Img[]>("/images/", {
         params: { property: propertyId, section: sectionId },
-        headers: { Authorization: `Bearer ${localStorage.getItem("access")}` },
       })
       .then((res) => setImages(res.data))
       .catch((err) => console.error("Failed to load images", err));
@@ -59,7 +58,6 @@ const Images: React.FC<ImagesProps> = ({ propertyId, sectionId }) => {
       await api.post("/images/", form, {
         headers: {
           "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${localStorage.getItem("access")}`,
         },
       });
       setFile(null);
@@ -67,7 +65,6 @@ const Images: React.FC<ImagesProps> = ({ propertyId, sectionId }) => {
       if (inputRef.current) inputRef.current.value = "";
       const res = await api.get<Img[]>("/images/", {
         params: { property: propertyId, section: sectionId },
-        headers: { Authorization: `Bearer ${localStorage.getItem("access")}` },
       });
       setImages(res.data);
     } catch (err: any) {
@@ -85,9 +82,7 @@ const Images: React.FC<ImagesProps> = ({ propertyId, sectionId }) => {
   async function handleDelete(id: number) {
     if (!window.confirm("Delete this image?")) return;
     try {
-      await api.delete(`/images/${id}/`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("access")}` },
-      });
+      await api.delete(`/images/${id}/`);
       setImages((imgs) => imgs.filter((i) => i.id !== id));
     } catch {
       console.error("Delete failed");

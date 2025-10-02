@@ -37,7 +37,9 @@ class PropertyImageSerializer(serializers.ModelSerializer):
 
     def get_url(self, obj):
         request = self.context.get("request")
-        return request.build_absolute_uri(obj.image.url)
+        if request:
+            return request.build_absolute_uri(obj.image.url)
+        return obj.image.url
 
     def get_filename(self, obj):
         return os.path.basename(obj.image.name)
